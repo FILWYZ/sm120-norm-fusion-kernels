@@ -1,89 +1,100 @@
-# SM120 Norm Fusion Kernels
+# SM120 LLM Norm 融合算子优化
 
-CUDA C++ implementations of RMSNorm and decode-time Q/K Norm + RoPE + paged KV
-store fusion for LLM inference, tuned for Qwen3-0.6B on an NVIDIA RTX 5060
-Laptop GPU (Blackwell SM120).
+面向 RTX 5060 Laptop（Blackwell SM120）的 CUDA C++ 性能工程项目，包含
+RMSNorm、Residual Add + RMSNorm，以及 Qwen3 Decode 热路径中的 Q/K
+RMSNorm + RoPE + Paged KV Store 融合。
 
-This repository is a performance-engineering project, not a claim that a custom
-kernel always beats PyTorch Inductor or vLLM. Every optimization is kept as a
-separate version and evaluated with correctness tests, repeated CUDA-event
-measurements, and Nsight Compute.
+项目按照“基线实现 → Warp/访存优化 → NCU/SASS 验证 → 工业算子对比 →
+真实推理引擎集成”的方式推进。重点不是证明自定义 CUDA 总能胜过框架，而是
+展示如何确定融合边界、解释硬件指标，并在端到端无收益时收窄调度范围。
 
-## Implemented versions
+关联推理引擎：
+[FILWYZ/nano-vllm-sm120-optimized](https://github.com/FILWYZ/nano-vllm-sm120-optimized)。
 
-| Version | Kernel | Purpose |
+## 核心成果
+
+| 方向 | 结果 |
+|---|---|
+| PyTorch Native 基线 | FP16/BF16 `hidden_size=1024` 下，预分配 RMSNorm 快 2.65–3.40× |
+| FlashInfer 0.6.6 公平对比 | 相同原地语义下，FP16 延迟降低 2.9–13.2%，BF16 降低 1.9–13.2% |
+| Q/K Norm+RoPE 微基准 | 相对等价 `torch.compile` 链路快 4.9–8.1× |
+| nano-vLLM 端到端 | batch=1 Decode +1.77% / +2.31%，输出吞吐 +1.24% / +1.72% |
+| 工程验证 | 180 项 GPU 测试；memcheck 0 errors；racecheck 0 hazards |
+
+所有性能结论只适用于文档记录的 GPU、dtype、Shape、软件版本和测试协议。
+
+## 已实现版本
+
+| 版本 | 实现 | 优化目标 |
 |---|---|---|
-| V1 | scalar loads + shared-memory tree reduction | understandable CUDA baseline |
-| V2 | hierarchical warp-shuffle reduction | reduce synchronization/shared-memory traffic |
-| V2 fused | residual add + generic RMSNorm | remove one launch and expose fusion benefit |
-| V3 fused | 1024-wide register-cached fast path | retain four values/thread across reduction |
-| V4 fused | dtype-aware 128-bit packed fast path | reduce load/store instruction count |
-| Auto | measured SM120 shape dispatch | choose V4/V3/V4 by row-count bucket; fall back to V2 |
+| V1 | 标量访存 + Shared Memory 树形归约 | 可读、可验证的 CUDA 基线 |
+| V2 | 分层 Warp Shuffle 归约 | 减少同步和 Shared Memory 流量 |
+| V2 fused | Residual Add + 通用 RMSNorm | 删除一次 Kernel Launch |
+| V3 fused | 1024 宽度寄存器缓存 | 归约前后复用每线程四个元素 |
+| V4 fused | dtype-aware 128-bit Pack | 减少全局访存指令数量 |
+| Auto | SM120 实测 Shape Dispatch | 按行数选择 V4/V3/V4，其他宽度回退 V2 |
 
-The fused operator also exposes an in-place API matching FlashInfer/vLLM
-semantics: `residual += input`, then `input = RMSNorm(residual) * weight`.
+Residual Add + RMSNorm 提供与 vLLM/FlashInfer 风格一致的原地接口：
 
-## Qwen3 decode fusion
+```text
+residual = residual + input
+input = RMSNorm(residual) * weight
+```
 
-The production fast path fuses four operations at the real engine boundary:
+## Qwen3 Decode 融合
 
-1. per-head Q/K RMSNorm with FP32 accumulation;
-2. half-split RoPE in FP32 after activation-dtype rounding;
-3. rotated K scatter into a 16-token paged cache;
-4. V scatter into the matching cache slot.
+生产快速路径跨越真实的算子边界，一次完成：
 
-One warp owns one 128-wide head and keeps four values per lane in registers.
-The repository also keeps a four-warp/block ablation: it reaches 100%
-theoretical occupancy, but did not improve the repeated end-to-end workload.
-The integration therefore dispatches the one-warp kernel only for batch-1
-decode and retains PyTorch Inductor for prefill and wider decode batches.
+1. Q/K 逐 Head RMSNorm，FP32 累加；
+2. 激活 dtype 舍入后的 FP32 半分式 RoPE；
+3. 旋转后 K 散写到 16-token Paged KV Cache；
+4. V 写入同一 Cache Slot。
 
-Against the equivalent `torch.compile` Q/K Norm+RoPE microbenchmark, the
-standalone fusion is 4.9–8.1x faster at 1–256 tokens. In nano-vLLM's Qwen3-0.6B
-CUDA Graph path, five isolated and order-balanced A/B processes show batch-1
-decode throughput gains of 1.77% and 2.31% for 64- and 256-token prompts;
-output throughput improves 1.24% and 1.72%. See
-[QK Norm+RoPE+KV results](docs/QK_NORM_ROPE_KV_RESULTS.md).
+一个 warp 负责一个 128 元素 Head，每个线程把四个元素保存在寄存器中。
+项目还保留 four-warps/block 消融版本：该版本达到 100% 理论 Occupancy，
+独立 Kernel 略快，但没有带来稳定端到端收益。
 
-## Industrial fused baseline
+因此 nano-vLLM 最终只在 **SM120 + Qwen3 head_dim=128 + batch=1 Decode**
+启用 one-warp/head 融合，Prefill 和宽 Batch 回退 PyTorch Inductor。
 
-Against FlashInfer 0.6.6 `fused_add_rmsnorm` with identical in-place semantics,
-the auto-dispatched custom kernel lowers median operator latency by 2.9–13.2%
-for FP16 and 1.9–13.2% for BF16 at `hidden_size=1024`, tokens 1–256. Results are
-medians across five independent Python processes; each process uses three CUDA
-Event samples, 100 warmups, and 500 measured iterations. See
-[the industrial-baseline report](docs/INDUSTRIAL_BASELINE.md).
+详细结果见
+[`QK_NORM_ROPE_KV_RESULTS.md`](docs/QK_NORM_ROPE_KV_RESULTS.md)。
 
-CUDA 13.3 `nvdisasm` confirms that the CUDA 12.8-built V4 FP16/BF16 kernels
-contain `LDG.E.128` and `STG.E.128`. Run `bash scripts/check_sass.sh` to verify
-the generated machine instructions locally.
+## SASS 与 NCU 证据
 
-## First measured result
+- V4 FP16/BF16 SASS 包含 `LDG.E.128` 和 `STG.E.128`，证明 16-byte Pack
+  确实生成 128-bit 全局访存。
+- Q/K Kernel SASS 包含 `SHFL.DOWN`、`SHFL.IDX` 和 `MUFU.RSQ`，生产版本
+  不包含 Block Barrier。
+- NCU 显示 V4 虽提高显存吞吐但增加寄存器使用，说明向量化、Occupancy
+  和 Shape 之间需要实测权衡。
 
-On RTX 5060 Laptop/SM120 with PyTorch 2.11.0+cu128, the best preallocated custom
-kernel takes 5.08–6.36 μs for FP16 `hidden_size=1024`, tokens 1–256, versus
-16.82–17.53 μs for PyTorch-native residual add followed by RMSNorm (2.65–3.40×).
-BF16 shows 2.67–3.27×. These ranges use medians from five independent Python
-processes. See [the first-results report](docs/FIRST_RESULTS.md) for
-the exact protocol, all values, limitations, and Nsight Compute trade-offs.
+```bash
+bash scripts/check_sass.sh
+bash scripts/profile_ncu.sh
+```
 
-## Build in WSL
+## 构建与测试
 
-Requirements: NVIDIA driver visible in WSL, CUDA toolkit/NVCC, Python 3.10+,
-PyTorch built for CUDA, Ninja, and a compiler compatible with the installed
-PyTorch release.
+要求：WSL 可见 NVIDIA 驱动，安装与 PyTorch 版本匹配的 CUDA Toolkit、
+NVCC、Ninja 和 C++ 编译器。
 
 ```bash
 python -m pip install -U pip ninja pytest
-TORCH_CUDA_ARCH_LIST=12.0 python -m pip install -e . --no-build-isolation
+
+CUDA_HOME=/usr/local/cuda-12.8 \
+TORCH_CUDA_ARCH_LIST=12.0 \
+python -m pip install -e . --no-build-isolation
+
 pytest -q
 ```
 
-If the installed PyTorch build cannot compile SM120 device code, first verify:
+环境检查：
 
 ```bash
 nvidia-smi
 nvcc --version
+
 python - <<'PY'
 import torch
 print(torch.__version__, torch.version.cuda)
@@ -93,6 +104,8 @@ PY
 
 ## Benchmark
 
+RMSNorm：
+
 ```bash
 python -m benchmarks.benchmark \
   --tokens 1 4 16 64 256 \
@@ -101,13 +114,9 @@ python -m benchmarks.benchmark \
   --output benchmark_results/fp16.json
 ```
 
-The reported effective bandwidth is a documented source-level lower-bound
-estimate. Nsight Compute counters should be used for hardware-level conclusions.
+Q/K Norm+RoPE：
 
 ```bash
-bash scripts/profile_ncu.sh
-bash scripts/check_sass.sh
-
 python -m benchmarks.qk_norm_rope \
   --dtype bf16 \
   --output benchmark_results/qk_norm_rope_bf16.json
@@ -116,20 +125,24 @@ python -m benchmarks.profile_qk_norm_rope \
   --tokens 1 --version 1 --store-kv
 ```
 
-## Correctness contract
+文档索引：
 
-- contiguous CUDA tensors;
-- matching input/residual/weight dtype;
-- FP16, BF16, and FP32 input with FP32 accumulation;
-- arbitrary leading dimensions;
-- generic V1/V2 supports non-multiple hidden sizes;
-- V3/V4 intentionally require `hidden_size=1024`; auto dispatch falls back to
-  V2 for other hidden sizes.
-- 180 GPU correctness tests cover allocating, preallocated, in-place, manual,
-  and auto-dispatched paths.
+- [`FIRST_RESULTS.md`](docs/FIRST_RESULTS.md)：PyTorch Native 基线与 NCU 结果。
+- [`INDUSTRIAL_BASELINE.md`](docs/INDUSTRIAL_BASELINE.md)：FlashInfer 公平对比。
+- [`QK_NORM_ROPE_KV_RESULTS.md`](docs/QK_NORM_ROPE_KV_RESULTS.md)：Qwen3 融合与端到端调度。
 
-## Attribution
+## 正确性契约
 
-The project structure and kernels are independently implemented for this
-experiment. Useful comparison material includes vLLM's fused RMSNorm operator,
-LeetCUDA's RMSNorm exercises, and llm.c's progressive kernel-optimization style.
+- 输入、Residual 和 Weight 位于同一 CUDA Device 且 dtype 匹配；
+- 支持 FP16、BF16、FP32，归约使用 FP32；
+- 通用 V1/V2 支持非整数倍 Hidden Size；
+- V3/V4 只支持 `hidden_size=1024`，其他宽度由 Auto 回退 V2；
+- Q/K 融合要求 `head_dim=128`、连续布局、FP32 RoPE Cache、int64 Positions
+  和 int32 Slot Mapping；
+- 不支持的引擎 Shape 不强行启用自定义 Kernel。
+
+## 结论边界
+
+本仓库证明的是一套完整的 CUDA 性能工程流程，而不是“自定义 Kernel 必然
+优于 PyTorch、FlashInfer 或 vLLM”。独立算子收益必须经过真实推理引擎 A/B
+验证；无法稳定获益的 Shape 应保留框架实现。

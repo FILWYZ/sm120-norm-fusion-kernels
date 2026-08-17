@@ -1,81 +1,72 @@
-# FlashInfer industrial fused baseline
+# FlashInfer fused add RMSNorm 公平基线
 
-## Scope
+## 对比范围
 
-This comparison uses the in-place contract shared by FlashInfer and vLLM-style
-fused add RMSNorm:
+对比使用 FlashInfer 和 vLLM 风格的相同原地语义：
 
 ```text
 residual = residual + input
 input = RMSNorm(residual) * weight
 ```
 
-Environment: NVIDIA GeForce RTX 5060 Laptop (SM120), PyTorch 2.11.0+cu128,
-FlashInfer 0.6.6, CUDA toolkit 12.8, `hidden_size=1024`.
+环境：RTX 5060 Laptop SM120、PyTorch 2.11.0+cu128、FlashInfer 0.6.6、
+CUDA Toolkit 12.8、`hidden_size=1024`。
 
-To keep repeated in-place invocations numerically stable without adding reset
-kernels to the measured region, the latency benchmark uses zero input and zero
-weight after randomized buffer allocation. Both implementations still execute
-the same load, reduction, normalization, and store paths. Separate correctness
-tests use randomized inputs and weights for FP16, BF16, and FP32.
+为避免重复原地调用时数值不断累积，同时不把 Reset Kernel 加入计时区域，
+延迟基准在随机分配 Buffer 后使用零 Input 和零 Weight。两种实现仍执行相同的
+Load、Reduction、Normalization 和 Store 路径；随机输入和 Weight 的正确性
+由独立 FP16/BF16/FP32 测试覆盖。
 
-Protocol:
+测试协议：
 
-- five independent Python processes;
-- three CUDA Event samples per process;
-- 100 warmups and 500 measured iterations per sample;
-- table values are medians of the five process medians;
-- custom and FlashInfer calls are both preallocated and in-place.
+- 五个独立 Python 进程；
+- 每进程三个 CUDA Event 样本；
+- 每样本 100 次预热、500 次正式迭代；
+- 表格取五个进程中位数的中位数；
+- 自定义实现和 FlashInfer 均使用预分配、原地接口。
 
-## Results
+## FP16 结果
 
-### FP16
-
-| Tokens | Custom auto | FlashInfer 0.6.6 | Speedup | Latency reduction |
+| Tokens | Custom Auto | FlashInfer 0.6.6 | 加速比 | 延迟降低 |
 |---:|---:|---:|---:|---:|
-| 1 | 5.229 us | 6.027 us | 1.152x | 13.23% |
-| 16 | 5.295 us | 5.963 us | 1.126x | 11.20% |
-| 64 | 5.831 us | 6.083 us | 1.043x | 4.15% |
-| 256 | 6.241 us | 6.428 us | 1.030x | 2.92% |
+| 1 | 5.229 μs | 6.027 μs | 1.152× | 13.23% |
+| 16 | 5.295 μs | 5.963 μs | 1.126× | 11.20% |
+| 64 | 5.831 μs | 6.083 μs | 1.043× | 4.15% |
+| 256 | 6.241 μs | 6.428 μs | 1.030× | 2.92% |
 
-### BF16
+## BF16 结果
 
-| Tokens | Custom auto | FlashInfer 0.6.6 | Speedup | Latency reduction |
+| Tokens | Custom Auto | FlashInfer 0.6.6 | 加速比 | 延迟降低 |
 |---:|---:|---:|---:|---:|
-| 1 | 5.280 us | 6.085 us | 1.152x | 13.23% |
-| 16 | 5.236 us | 6.035 us | 1.153x | 13.24% |
-| 64 | 5.815 us | 6.136 us | 1.055x | 5.23% |
-| 256 | 6.274 us | 6.396 us | 1.019x | 1.91% |
+| 1 | 5.280 μs | 6.085 μs | 1.152× | 13.23% |
+| 16 | 5.236 μs | 6.035 μs | 1.153× | 13.24% |
+| 64 | 5.815 μs | 6.136 μs | 1.055× | 5.23% |
+| 256 | 6.274 μs | 6.396 μs | 1.019× | 1.91% |
 
-Raw per-process and aggregate JSON files are stored under
-`benchmark_results/flashinfer_repeated/`.
+原始分进程数据和汇总 JSON 位于
+`benchmark_results/flashinfer_repeated/`。
 
-## Dispatch rule
+## SM120 Dispatch 规则
 
-The current SM120 `hidden_size=1024` rule is deliberately simple and keeps all
-manual versions available for ablation:
-
-| Rows | Selected kernel |
+| Rows | 选择的 Kernel |
 |---:|---|
-| 1-32 | V4 packed |
-| 33-192 | V3 register-cached |
-| 193+ | V4 packed |
-| non-1024 hidden size | V2 generic fallback |
+| 1–32 | V4 128-bit Pack |
+| 33–192 | V3 寄存器缓存 |
+| 193+ | V4 128-bit Pack |
+| 非 1024 Hidden Size | V2 通用回退 |
 
-This table is an empirical result for one GPU and one hidden size, not a claim
-that the same thresholds are optimal on other architectures.
+该阈值来自单张 SM120 和单一 Hidden Size 的实测，不代表其他 GPU 的最优规则。
 
-## SASS evidence
+## SASS 证据
 
-`cuobjdump` with CUDA 13.3 `nvdisasm` shows `LDG.E.128` and `STG.E.128` in the
-FP16 and BF16 V4 packed kernel specializations. V3 uses scalar `LDG.E.U16` and
-`STG.E.U16` instructions. This confirms that the source-level `alignas(16)`
-pack is lowered to 128-bit global-memory instructions.
+CUDA 13.3 `cuobjdump/nvdisasm` 显示，CUDA 12.8 构建的 V4 FP16/BF16
+特化包含 `LDG.E.128` 和 `STG.E.128`；V3 使用标量 `LDG.E.U16` 和
+`STG.E.U16`。这证明源码中的 `alignas(16)` Pack 确实生成 128-bit
+全局访存，而不是只停留在源码意图。
 
-## Claim boundary
+## 结论边界
 
-The safe conclusion is that this shape-specialized SM120 implementation is
-faster than FlashInfer 0.6.6 for the measured FP16/BF16 shapes. It is not a
-general claim against every vLLM, FlashInfer, Inductor, GPU, dtype, or hidden
-size. The remaining system-level question is whether replacing RMSNorm in an
-LLM engine produces measurable end-to-end decode improvement.
+安全结论是：在记录的 FP16/BF16 Shape 上，该 SM120 特化实现比
+FlashInfer 0.6.6 对应算子更快。它不是对所有 vLLM、FlashInfer、Inductor、
+GPU、dtype 或 Hidden Size 的通用结论；算子收益是否能传递到推理引擎，必须
+继续通过端到端 A/B 验证。

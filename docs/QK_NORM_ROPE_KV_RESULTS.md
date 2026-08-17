@@ -1,73 +1,73 @@
-# Qwen3 Q/K Norm + RoPE + paged KV fusion
+# Qwen3 Q/K Norm + RoPE + Paged KV Store 融合结果
 
-## Contract and implementation
+## 算子契约
 
-The optimized Qwen3-0.6B shape is Q heads `[T, 16, 128]`, K/V heads
-`[T, 8, 128]`, BF16 activation/weight, FP32 RoPE cache, int64 positions and
-int32 paged-cache slot mapping. The kernel preserves the original numerical
-order: FP32 RMS reduction, activation-dtype rounding after RMSNorm, then FP32
-half-split RoPE and final activation-dtype rounding.
+Qwen3-0.6B 的目标 Shape 为 Q `[T, 16, 128]`、K/V `[T, 8, 128]`，激活和
+Weight 使用 BF16，RoPE Cache 使用 FP32，Positions 使用 int64，Paged KV
+Slot Mapping 使用 int32。
 
-The decode operator mutates Q/K in place and scatters rotated K plus V into
-`[blocks, page_size, 8, 128]` cache storage. A PyTorch custom-op schema declares
-all mutated tensors, and a FakeTensor implementation allows
-`torch.compile(fullgraph=True)` and CUDA Graph capture.
+Kernel 保持原路径的数值顺序：FP32 RMS Reduction → RMSNorm 后舍入到激活
+dtype → FP32 半分式 RoPE → 再次舍入到激活 dtype。
 
-## Microbenchmark
+Decode 算子原地修改 Q/K，并将旋转后的 K 和 V 散写到
+`[blocks, page_size, 8, 128]` Cache。PyTorch Custom Operator Schema 显式
+声明所有 Mutation，FakeTensor 实现支持 `torch.compile(fullgraph=True)`
+和 CUDA Graph Capture。
 
-Environment: RTX 5060 Laptop (SM120), PyTorch 2.11.0+cu128, CUDA toolkit 12.8,
-BF16, 100 warmups, 1,000 iterations, three CUDA Event samples.
+## 微基准
 
-| Tokens | `torch.compile` | fused Q/K Norm+RoPE | Speedup |
+环境：RTX 5060 Laptop SM120、PyTorch 2.11.0+cu128、CUDA Toolkit 12.8、
+BF16、100 次预热、1,000 次迭代、三个 CUDA Event 样本。
+
+| Tokens | `torch.compile` | 融合 Q/K Norm+RoPE | 加速比 |
 |---:|---:|---:|---:|
-| 1 | 46.34 us | 9.36 us | 4.95x |
-| 4 | 55.61 us | 7.05 us | 7.89x |
-| 16 | 53.32 us | 6.62 us | 8.06x |
-| 64 | 54.65 us | 7.11 us | 7.69x |
-| 256 | 54.17 us | 11.03 us | 4.91x |
+| 1 | 46.34 μs | 9.36 μs | 4.95× |
+| 4 | 55.61 μs | 7.05 μs | 7.89× |
+| 16 | 53.32 μs | 6.62 μs | 8.06× |
+| 64 | 54.65 μs | 7.11 μs | 7.69× |
+| 256 | 54.17 μs | 11.03 μs | 4.91× |
 
-This comparison isolates Q/K Norm+RoPE. The production operator additionally
-removes the separate Triton KV append launch and K reread.
+该表只隔离 Q/K Norm+RoPE；生产版本还会删除独立 Triton KV Append Launch
+和一次 K 的全局内存回读。
 
-## Nsight Compute and SASS
+## NCU 与 SASS
 
-For 64 BF16 tokens, the register-only one-warp Q/K kernel takes 4.48 us versus
-4.86 us for the two-warp shared-reduction version. At 256 tokens the result is
-10.40 us versus 13.47 us. The selected SASS contains `SHFL.DOWN`, `SHFL.IDX`,
-`MUFU.RSQ`, global loads/stores, and no block barrier.
+64 个 BF16 Token 时，寄存器化 one-warp Q/K Kernel 为 4.48 μs，双 warp
+Shared Reduction 版本为 4.86 μs；256 Token 时分别为 10.40 μs 和
+13.47 μs。
 
-The KV-fused ablation compares one and four warps per block. NCU reports
-2.82/2.94 us for one warp and 2.66/2.75 us for four warps at T=1/T=8. Despite
-the lower isolated kernel time and 100% theoretical occupancy, the four-warp
-version did not produce a stable end-to-end gain. The production dispatch uses
-the end-to-end-validated one-warp version; both versions remain reproducible.
+最终 SASS 包含 `SHFL.DOWN`、`SHFL.IDX`、`MUFU.RSQ` 和全局 Load/Store，
+不包含 Block Barrier。
 
-## End-to-end dispatch result
+KV 融合消融比较 one-warp/block 与 four-warps/block：NCU 在 T=1/T=8 下
+分别得到 2.82/2.94 μs 和 2.66/2.75 μs。four-warps 版本虽然独立 Kernel
+略快且达到 100% 理论 Occupancy，但没有产生稳定端到端收益，因此生产
+Dispatch 使用经过端到端验证的 one-warp 版本，两版代码均保留用于复现。
 
-Protocol: Qwen3-0.6B BF16, FlashInfer attention, 16-token pages, CUDA Graph
-decode, five independent processes per backend, alternating A/B order, two
-measurements per workload, and median of process means.
+## 端到端结果
 
-| Requests | Prompt | Decode change | Output throughput change |
+协议：Qwen3-0.6B BF16、FlashInfer Attention、16-token KV Page、CUDA Graph
+Decode；每后端五个独立进程，A/B 顺序交替；每负载两次测量；最终取进程
+均值的中位数。
+
+| 请求数 | Prompt | Decode 变化 | 输出吞吐变化 |
 |---:|---:|---:|---:|
-| 1 | 64 | +1.77% | +1.24% |
-| 1 | 256 | +2.31% | +1.72% |
+| 1 | 64 | **+1.77%** | **+1.24%** |
+| 1 | 256 | **+2.31%** | **+1.72%** |
 
-Prefill and decode batches wider than one use the existing Inductor path. Their
-reported cross-process deltas are treated as measurement noise, not as kernel
-speedups. This narrow dispatch prevents the prefill regressions observed when
-the custom operator was enabled globally.
+Prefill 和 batch>1 Decode 使用现有 Inductor 路径。两组配置在这些 Shape
+上的跨进程差异只视为测量噪声，不归因于自定义 Kernel。窄 Dispatch 避免了
+全局启用时观察到的 Prefill 回退。
 
-## Verification
+## 验证
 
-- 180 CUDA correctness tests across FP16/BF16/FP32, shapes and both KV versions;
-- 41 nano-vLLM tests plus 5 subtests;
-- `torch.compile(fullgraph=True)` custom-op smoke test;
-- CUDA Graph capture and replay in the real engine;
-- Compute Sanitizer memcheck: 0 errors;
-- Compute Sanitizer racecheck: 0 hazards;
-- CUDA 13.3 NCU and cubin disassembly over CUDA 12.8-built SM120 code.
+- CUDA 正确性测试：180 项；
+- nano-vLLM：41 项测试和 5 个 subtests；
+- `torch.compile(fullgraph=True)` Custom Operator 测试通过；
+- 真实推理引擎 CUDA Graph Capture/Replay 通过；
+- Compute Sanitizer memcheck：0 errors；
+- Compute Sanitizer racecheck：0 hazards；
+- CUDA 13.3 NCU 与 Cubin 反汇编验证 CUDA 12.8 构建的 SM120 代码。
 
-The claim is deliberately limited to the recorded model, GPU, software stack
-and workload. It is not a general performance claim against official vLLM,
-FlashInfer, Inductor, or other architectures.
+公开结论只适用于记录的模型、GPU、软件栈和负载，不是相对官方 vLLM、
+FlashInfer、Inductor 或其他架构的通用性能结论。
