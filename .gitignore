@@ -7,6 +7,8 @@ dist/
 .pytest_cache/
 .venv/
 benchmark_results/*.ncu-rep
+benchmark_results/**/*.ncu-rep
+benchmark_results/qk_norm_rope_bf16_first.json
 benchmark_results/repeated/*_run_*.json
 benchmark_results/*_dispatch_probe.json
 benchmark_results/*_auto_validation.json

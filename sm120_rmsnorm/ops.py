@@ -76,3 +76,92 @@ def fused_add_rms_norm_inplace(
     """Update ``residual += x`` and replace ``x`` with RMSNorm(residual)."""
     _require_extension()
     _C.fused_add_rms_norm_inplace(x, residual, weight, epsilon, version)
+
+
+def fused_qk_rms_norm_rope(
+    query: torch.Tensor,
+    key: torch.Tensor,
+    query_weight: torch.Tensor,
+    key_weight: torch.Tensor,
+    positions: torch.Tensor,
+    cos_sin_cache: torch.Tensor,
+    epsilon: float = 1e-6,
+    version: int = 2,
+) -> None:
+    """Apply per-head RMSNorm and half-split RoPE to Q/K in place."""
+    _require_extension()
+    torch.ops.sm120_norm.fused_qk_rms_norm_rope_(
+        query,
+        key,
+        query_weight,
+        key_weight,
+        positions,
+        cos_sin_cache,
+        epsilon,
+        version,
+    )
+
+
+def fused_qk_rms_norm_rope_kv(
+    query: torch.Tensor,
+    key: torch.Tensor,
+    value: torch.Tensor,
+    query_weight: torch.Tensor,
+    key_weight: torch.Tensor,
+    positions: torch.Tensor,
+    cos_sin_cache: torch.Tensor,
+    key_cache: torch.Tensor,
+    value_cache: torch.Tensor,
+    slot_mapping: torch.Tensor,
+    epsilon: float = 1e-6,
+    version: int = 1,
+) -> None:
+    """Fuse Q/K Norm+RoPE and scatter rotated K plus V into paged cache."""
+    _require_extension()
+    torch.ops.sm120_norm.fused_qk_rms_norm_rope_kv_(
+        query,
+        key,
+        value,
+        query_weight,
+        key_weight,
+        positions,
+        cos_sin_cache,
+        key_cache,
+        value_cache,
+        slot_mapping,
+        epsilon,
+        version,
+    )
+
+
+if _C is not None:
+
+    @torch.library.register_fake("sm120_norm::fused_qk_rms_norm_rope_")
+    def _fused_qk_rms_norm_rope_fake(
+        query: torch.Tensor,
+        key: torch.Tensor,
+        query_weight: torch.Tensor,
+        key_weight: torch.Tensor,
+        positions: torch.Tensor,
+        cos_sin_cache: torch.Tensor,
+        epsilon: float = 1e-6,
+        version: int = 2,
+    ) -> None:
+        return None
+
+    @torch.library.register_fake("sm120_norm::fused_qk_rms_norm_rope_kv_")
+    def _fused_qk_rms_norm_rope_kv_fake(
+        query: torch.Tensor,
+        key: torch.Tensor,
+        value: torch.Tensor,
+        query_weight: torch.Tensor,
+        key_weight: torch.Tensor,
+        positions: torch.Tensor,
+        cos_sin_cache: torch.Tensor,
+        key_cache: torch.Tensor,
+        value_cache: torch.Tensor,
+        slot_mapping: torch.Tensor,
+        epsilon: float = 1e-6,
+        version: int = 1,
+    ) -> None:
+        return None

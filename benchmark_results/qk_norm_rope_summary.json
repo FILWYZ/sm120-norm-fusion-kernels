@@ -1,0 +1,27 @@
+{
+  "environment": {
+    "gpu": "NVIDIA GeForce RTX 5060",
+    "compute_capability": [12, 0],
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8",
+    "dtype": "bf16"
+  },
+  "microbenchmark": {
+    "protocol": "3 CUDA Event samples; 100 warmups; 1000 iterations",
+    "tokens": [1, 4, 16, 64, 256],
+    "torch_compile_us": [46.3377, 55.6135, 53.3164, 54.6468, 54.1662],
+    "fused_qk_norm_rope_us": [9.3615, 7.0492, 6.6152, 7.1097, 11.0259]
+  },
+  "ncu": {
+    "qk_tokens64_us": {"block64": 4.86, "warp32": 4.48},
+    "qk_tokens256_us": {"block64": 13.47, "warp32": 10.40},
+    "qk_rope_kv_tokens1_us": {"one_warp": 2.82, "four_warps": 2.66},
+    "qk_rope_kv_tokens8_us": {"one_warp": 2.94, "four_warps": 2.75}
+  },
+  "verification": {
+    "cuda_tests": 180,
+    "memcheck_errors": 0,
+    "racecheck_hazards": 0,
+    "torch_compile_fullgraph": true
+  }
+}

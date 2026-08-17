@@ -1,8 +1,8 @@
-# SM120 Fused RMSNorm
+# SM120 Norm Fusion Kernels
 
-CUDA C++ implementations of RMSNorm and fused residual-add RMSNorm for LLM
-inference, initially tuned for Qwen3-0.6B (`hidden_size=1024`) on an NVIDIA RTX
-5060 Laptop GPU (Blackwell SM120).
+CUDA C++ implementations of RMSNorm and decode-time Q/K Norm + RoPE + paged KV
+store fusion for LLM inference, tuned for Qwen3-0.6B on an NVIDIA RTX 5060
+Laptop GPU (Blackwell SM120).
 
 This repository is a performance-engineering project, not a claim that a custom
 kernel always beats PyTorch Inductor or vLLM. Every optimization is kept as a
@@ -22,6 +22,28 @@ measurements, and Nsight Compute.
 
 The fused operator also exposes an in-place API matching FlashInfer/vLLM
 semantics: `residual += input`, then `input = RMSNorm(residual) * weight`.
+
+## Qwen3 decode fusion
+
+The production fast path fuses four operations at the real engine boundary:
+
+1. per-head Q/K RMSNorm with FP32 accumulation;
+2. half-split RoPE in FP32 after activation-dtype rounding;
+3. rotated K scatter into a 16-token paged cache;
+4. V scatter into the matching cache slot.
+
+One warp owns one 128-wide head and keeps four values per lane in registers.
+The repository also keeps a four-warp/block ablation: it reaches 100%
+theoretical occupancy, but did not improve the repeated end-to-end workload.
+The integration therefore dispatches the one-warp kernel only for batch-1
+decode and retains PyTorch Inductor for prefill and wider decode batches.
+
+Against the equivalent `torch.compile` Q/K Norm+RoPE microbenchmark, the
+standalone fusion is 4.9–8.1x faster at 1–256 tokens. In nano-vLLM's Qwen3-0.6B
+CUDA Graph path, five isolated and order-balanced A/B processes show batch-1
+decode throughput gains of 1.77% and 2.31% for 64- and 256-token prompts;
+output throughput improves 1.24% and 1.72%. See
+[QK Norm+RoPE+KV results](docs/QK_NORM_ROPE_KV_RESULTS.md).
 
 ## Industrial fused baseline
 
@@ -85,6 +107,13 @@ estimate. Nsight Compute counters should be used for hardware-level conclusions.
 ```bash
 bash scripts/profile_ncu.sh
 bash scripts/check_sass.sh
+
+python -m benchmarks.qk_norm_rope \
+  --dtype bf16 \
+  --output benchmark_results/qk_norm_rope_bf16.json
+
+python -m benchmarks.profile_qk_norm_rope \
+  --tokens 1 --version 1 --store-kv
 ```
 
 ## Correctness contract
@@ -96,7 +125,7 @@ bash scripts/check_sass.sh
 - generic V1/V2 supports non-multiple hidden sizes;
 - V3/V4 intentionally require `hidden_size=1024`; auto dispatch falls back to
   V2 for other hidden sizes.
-- 105 GPU correctness tests cover allocating, preallocated, in-place, manual,
+- 180 GPU correctness tests cover allocating, preallocated, in-place, manual,
   and auto-dispatched paths.
 
 ## Attribution

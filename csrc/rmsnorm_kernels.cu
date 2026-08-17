@@ -239,6 +239,203 @@ __global__ void fused_add_rms_norm_h1024_packed_kernel(
   reinterpret_cast<Pack*>(residual_output)[pack_offset + threadIdx.x] = residual_output_pack;
 }
 
+// Qwen3 fast path: fuse per-head Q/K RMSNorm with half-split RoPE. One
+// 64-thread block owns one 128-wide head; every thread keeps the two rotary
+// components in registers across the reduction and rotation.
+template <typename scalar_t>
+__global__ void fused_qk_rms_norm_rope_h128_block64_kernel(
+    scalar_t* __restrict__ query,
+    scalar_t* __restrict__ key,
+    const scalar_t* __restrict__ query_weight,
+    const scalar_t* __restrict__ key_weight,
+    const int64_t* __restrict__ positions,
+    const float* __restrict__ cos_sin_cache,
+    int64_t query_heads,
+    int64_t key_heads,
+    float epsilon) {
+  constexpr int kHalfDim = 64;
+  constexpr int kHeadDim = 128;
+  constexpr int kBlockSize = kHalfDim;
+  const int64_t token = blockIdx.y;
+  const int64_t combined_head = blockIdx.x;
+  const bool is_query = combined_head < query_heads;
+  const int64_t head = is_query ? combined_head : combined_head - query_heads;
+  scalar_t* tensor = is_query ? query : key;
+  const scalar_t* weight = is_query ? query_weight : key_weight;
+  const int64_t heads = is_query ? query_heads : key_heads;
+  const int64_t base = (token * heads + head) * kHeadDim;
+  const int lane = threadIdx.x;
+
+  const float first = to_float(tensor[base + lane]);
+  const float second = to_float(tensor[base + lane + kHalfDim]);
+  const float sum_sq = first * first + second * second;
+  const float inv_rms = rsqrtf(
+      block_reduce_sum<kBlockSize>(sum_sq) / static_cast<float>(kHeadDim) + epsilon);
+
+  // Match the existing Qwen3 path: RMSNorm is rounded to the activation dtype
+  // before RoPE performs its arithmetic in FP32.
+  const float norm_first = to_float(from_float<scalar_t>(
+      first * inv_rms * to_float(weight[lane])));
+  const float norm_second = to_float(from_float<scalar_t>(
+      second * inv_rms * to_float(weight[lane + kHalfDim])));
+  const int64_t cache_base = positions[token] * kHeadDim;
+  const float cosine = cos_sin_cache[cache_base + lane];
+  const float sine = cos_sin_cache[cache_base + lane + kHalfDim];
+
+  tensor[base + lane] = from_float<scalar_t>(
+      norm_first * cosine - norm_second * sine);
+  tensor[base + lane + kHalfDim] = from_float<scalar_t>(
+      norm_second * cosine + norm_first * sine);
+}
+
+// V2: one warp owns one head. Four values/thread cover head_dim=128, so the
+// reduction stays entirely in registers and warp shuffle instructions.
+template <typename scalar_t>
+__global__ void fused_qk_rms_norm_rope_h128_warp32_kernel(
+    scalar_t* __restrict__ query,
+    scalar_t* __restrict__ key,
+    const scalar_t* __restrict__ query_weight,
+    const scalar_t* __restrict__ key_weight,
+    const int64_t* __restrict__ positions,
+    const float* __restrict__ cos_sin_cache,
+    int64_t query_heads,
+    int64_t key_heads,
+    float epsilon) {
+  constexpr int kWarp = 32;
+  constexpr int kHalfDim = 64;
+  constexpr int kHeadDim = 128;
+  const int64_t token = blockIdx.y;
+  const int64_t combined_head = blockIdx.x;
+  const bool is_query = combined_head < query_heads;
+  const int64_t head = is_query ? combined_head : combined_head - query_heads;
+  scalar_t* tensor = is_query ? query : key;
+  const scalar_t* weight = is_query ? query_weight : key_weight;
+  const int64_t heads = is_query ? query_heads : key_heads;
+  const int64_t base = (token * heads + head) * kHeadDim;
+  const int lane = threadIdx.x;
+  const int first_index = lane;
+  const int second_index = lane + kWarp;
+  const int third_index = lane + kHalfDim;
+  const int fourth_index = lane + kHalfDim + kWarp;
+
+  const float first = to_float(tensor[base + first_index]);
+  const float second = to_float(tensor[base + second_index]);
+  const float third = to_float(tensor[base + third_index]);
+  const float fourth = to_float(tensor[base + fourth_index]);
+  float sum_sq = first * first + second * second + third * third + fourth * fourth;
+  sum_sq = warp_reduce_sum(sum_sq);
+  sum_sq = __shfl_sync(0xffffffff, sum_sq, 0);
+  const float inv_rms = rsqrtf(sum_sq / static_cast<float>(kHeadDim) + epsilon);
+
+  const float norm_first = to_float(from_float<scalar_t>(
+      first * inv_rms * to_float(weight[first_index])));
+  const float norm_second = to_float(from_float<scalar_t>(
+      second * inv_rms * to_float(weight[second_index])));
+  const float norm_third = to_float(from_float<scalar_t>(
+      third * inv_rms * to_float(weight[third_index])));
+  const float norm_fourth = to_float(from_float<scalar_t>(
+      fourth * inv_rms * to_float(weight[fourth_index])));
+  const int64_t cache_base = positions[token] * kHeadDim;
+  const float cosine_first = cos_sin_cache[cache_base + first_index];
+  const float cosine_second = cos_sin_cache[cache_base + second_index];
+  const float sine_first = cos_sin_cache[cache_base + third_index];
+  const float sine_second = cos_sin_cache[cache_base + fourth_index];
+
+  tensor[base + first_index] = from_float<scalar_t>(
+      norm_first * cosine_first - norm_third * sine_first);
+  tensor[base + third_index] = from_float<scalar_t>(
+      norm_third * cosine_first + norm_first * sine_first);
+  tensor[base + second_index] = from_float<scalar_t>(
+      norm_second * cosine_second - norm_fourth * sine_second);
+  tensor[base + fourth_index] = from_float<scalar_t>(
+      norm_fourth * cosine_second + norm_second * sine_second);
+}
+
+// V3 production path: extend V2's register-resident Q/K transform across the
+// adjacent KV-cache boundary. K heads publish their rotated values and copy V
+// directly into paged cache slots, eliminating a separate KV append launch and
+// the extra global read of K.
+template <typename scalar_t, int kWarpsPerBlock>
+__global__ void fused_qk_rms_norm_rope_kv_h128_kernel(
+    scalar_t* __restrict__ query,
+    scalar_t* __restrict__ key,
+    const scalar_t* __restrict__ value,
+    const scalar_t* __restrict__ query_weight,
+    const scalar_t* __restrict__ key_weight,
+    const int64_t* __restrict__ positions,
+    const float* __restrict__ cos_sin_cache,
+    scalar_t* __restrict__ key_cache,
+    scalar_t* __restrict__ value_cache,
+    const int32_t* __restrict__ slot_mapping,
+    int64_t query_heads,
+    int64_t key_heads,
+    float epsilon) {
+  constexpr int kWarp = 32;
+  constexpr int kHalfDim = 64;
+  constexpr int kHeadDim = 128;
+  const int64_t token = blockIdx.y;
+  const int warp = threadIdx.x / kWarp;
+  const int64_t combined_head = blockIdx.x * kWarpsPerBlock + warp;
+  if (combined_head >= query_heads + key_heads) {
+    return;
+  }
+  const bool is_query = combined_head < query_heads;
+  const int64_t head = is_query ? combined_head : combined_head - query_heads;
+  scalar_t* tensor = is_query ? query : key;
+  const scalar_t* weight = is_query ? query_weight : key_weight;
+  const int64_t heads = is_query ? query_heads : key_heads;
+  const int64_t base = (token * heads + head) * kHeadDim;
+  const int lane = threadIdx.x % kWarp;
+  const int indices[4] = {lane, lane + kWarp, lane + kHalfDim,
+                          lane + kHalfDim + kWarp};
+
+  const float first = to_float(tensor[base + indices[0]]);
+  const float second = to_float(tensor[base + indices[1]]);
+  const float third = to_float(tensor[base + indices[2]]);
+  const float fourth = to_float(tensor[base + indices[3]]);
+  float sum_sq = first * first + second * second + third * third + fourth * fourth;
+  sum_sq = warp_reduce_sum(sum_sq);
+  sum_sq = __shfl_sync(0xffffffff, sum_sq, 0);
+  const float inv_rms = rsqrtf(sum_sq / static_cast<float>(kHeadDim) + epsilon);
+
+  const float norm_first = to_float(from_float<scalar_t>(
+      first * inv_rms * to_float(weight[indices[0]])));
+  const float norm_second = to_float(from_float<scalar_t>(
+      second * inv_rms * to_float(weight[indices[1]])));
+  const float norm_third = to_float(from_float<scalar_t>(
+      third * inv_rms * to_float(weight[indices[2]])));
+  const float norm_fourth = to_float(from_float<scalar_t>(
+      fourth * inv_rms * to_float(weight[indices[3]])));
+  const int64_t rope_base = positions[token] * kHeadDim;
+  const float cosine_first = cos_sin_cache[rope_base + indices[0]];
+  const float cosine_second = cos_sin_cache[rope_base + indices[1]];
+  const float sine_first = cos_sin_cache[rope_base + indices[2]];
+  const float sine_second = cos_sin_cache[rope_base + indices[3]];
+  const scalar_t outputs[4] = {
+      from_float<scalar_t>(norm_first * cosine_first - norm_third * sine_first),
+      from_float<scalar_t>(norm_second * cosine_second - norm_fourth * sine_second),
+      from_float<scalar_t>(norm_third * cosine_first + norm_first * sine_first),
+      from_float<scalar_t>(norm_fourth * cosine_second + norm_second * sine_second)};
+
+#pragma unroll
+  for (int item = 0; item < 4; ++item) {
+    tensor[base + indices[item]] = outputs[item];
+  }
+
+  if (!is_query) {
+    const int32_t slot = slot_mapping[token];
+    if (slot >= 0) {
+      const int64_t cache_base =
+          (static_cast<int64_t>(slot) * key_heads + head) * kHeadDim;
+#pragma unroll
+      for (int item = 0; item < 4; ++item) {
+        key_cache[cache_base + indices[item]] = outputs[item];
+        value_cache[cache_base + indices[item]] = value[base + indices[item]];
+      }
+    }
+  }
+}
+
 void check_common(const torch::Tensor& input, const torch::Tensor& weight) {
   TORCH_CHECK(input.is_cuda(), "input must be a CUDA tensor");
   TORCH_CHECK(weight.is_cuda(), "weight must be a CUDA tensor");
@@ -337,6 +534,178 @@ void fused_add_rms_norm_inplace_cuda(
   // its input reads before writing input, so these aliases are safe.
   fused_add_rms_norm_out_cuda(
       input, residual, weight, input, residual, epsilon, version);
+}
+
+void fused_qk_rms_norm_rope_cuda(
+    torch::Tensor query,
+    torch::Tensor key,
+    torch::Tensor query_weight,
+    torch::Tensor key_weight,
+    torch::Tensor positions,
+    torch::Tensor cos_sin_cache,
+    double epsilon,
+    int64_t version) {
+  TORCH_CHECK(query.is_cuda() && key.is_cuda(), "query and key must be CUDA tensors");
+  TORCH_CHECK(query.is_contiguous() && key.is_contiguous(),
+              "query and key must be contiguous");
+  TORCH_CHECK(query.dim() == 3 && key.dim() == 3,
+              "query and key must have shape [tokens, heads, head_dim]");
+  TORCH_CHECK(query.size(0) == key.size(0), "query and key token counts must match");
+  TORCH_CHECK(query.size(2) == 128 && key.size(2) == 128,
+              "fused QK Norm+RoPE requires head_dim=128");
+  TORCH_CHECK(query.scalar_type() == key.scalar_type(), "query and key dtypes must match");
+  TORCH_CHECK(query_weight.is_cuda() && key_weight.is_cuda(),
+              "Q/K weights must be CUDA tensors");
+  TORCH_CHECK(query_weight.is_contiguous() && key_weight.is_contiguous(),
+              "Q/K weights must be contiguous");
+  TORCH_CHECK(query_weight.numel() == 128 && key_weight.numel() == 128,
+              "Q/K weights must contain 128 elements");
+  TORCH_CHECK(query_weight.scalar_type() == query.scalar_type() &&
+                  key_weight.scalar_type() == query.scalar_type(),
+              "Q/K weight dtypes must match activations");
+  TORCH_CHECK(positions.is_cuda() && positions.is_contiguous(),
+              "positions must be a contiguous CUDA tensor");
+  TORCH_CHECK(positions.scalar_type() == torch::kInt64,
+              "positions must use int64 dtype");
+  TORCH_CHECK(positions.numel() == query.size(0),
+              "positions length must match token count");
+  TORCH_CHECK(cos_sin_cache.is_cuda() && cos_sin_cache.is_contiguous(),
+              "cos/sin cache must be a contiguous CUDA tensor");
+  TORCH_CHECK(cos_sin_cache.scalar_type() == torch::kFloat32,
+              "cos/sin cache must use float32 dtype");
+  TORCH_CHECK(cos_sin_cache.size(-1) == 128,
+              "cos/sin cache last dimension must be 128");
+  TORCH_CHECK(version == 1 || version == 2,
+              "QK Norm+RoPE version must be 1 or 2");
+  TORCH_CHECK(query.device() == key.device() && query.device() == query_weight.device() &&
+                  query.device() == key_weight.device() && query.device() == positions.device() &&
+                  query.device() == cos_sin_cache.device(),
+              "all tensors must be on the same CUDA device");
+  c10::cuda::CUDAGuard device_guard(query.device());
+
+  const dim3 grid(query.size(1) + key.size(1), query.size(0));
+  const cudaStream_t stream = c10::cuda::getCurrentCUDAStream();
+  AT_DISPATCH_FLOATING_TYPES_AND2(
+      at::ScalarType::Half,
+      at::ScalarType::BFloat16,
+      query.scalar_type(),
+      "fused_qk_rms_norm_rope_cuda",
+      [&] {
+        if (version == 1) {
+          fused_qk_rms_norm_rope_h128_block64_kernel<scalar_t><<<grid, 64, 0, stream>>>(
+              query.data_ptr<scalar_t>(), key.data_ptr<scalar_t>(),
+              query_weight.data_ptr<scalar_t>(), key_weight.data_ptr<scalar_t>(),
+              positions.data_ptr<int64_t>(), cos_sin_cache.data_ptr<float>(),
+              query.size(1), key.size(1), static_cast<float>(epsilon));
+        } else {
+          fused_qk_rms_norm_rope_h128_warp32_kernel<scalar_t><<<grid, 32, 0, stream>>>(
+              query.data_ptr<scalar_t>(), key.data_ptr<scalar_t>(),
+              query_weight.data_ptr<scalar_t>(), key_weight.data_ptr<scalar_t>(),
+              positions.data_ptr<int64_t>(), cos_sin_cache.data_ptr<float>(),
+              query.size(1), key.size(1), static_cast<float>(epsilon));
+        }
+      });
+  C10_CUDA_KERNEL_LAUNCH_CHECK();
+}
+
+void fused_qk_rms_norm_rope_kv_cuda(
+    torch::Tensor query,
+    torch::Tensor key,
+    torch::Tensor value,
+    torch::Tensor query_weight,
+    torch::Tensor key_weight,
+    torch::Tensor positions,
+    torch::Tensor cos_sin_cache,
+    torch::Tensor key_cache,
+    torch::Tensor value_cache,
+    torch::Tensor slot_mapping,
+    double epsilon,
+    int64_t version) {
+  TORCH_CHECK(query.is_cuda() && key.is_cuda() && value.is_cuda(),
+              "Q/K/V must be CUDA tensors");
+  TORCH_CHECK(query.is_contiguous() && key.is_contiguous() && value.is_contiguous(),
+              "Q/K/V must be contiguous");
+  TORCH_CHECK(query.dim() == 3 && key.dim() == 3 && value.dim() == 3,
+              "Q/K/V must have shape [tokens, heads, head_dim]");
+  TORCH_CHECK(query.size(0) == key.size(0) && key.sizes() == value.sizes(),
+              "Q/K/V token and KV shapes must match");
+  TORCH_CHECK(query.size(2) == 128 && key.size(2) == 128,
+              "fused QK Norm+RoPE+KV requires head_dim=128");
+  TORCH_CHECK(query.scalar_type() == key.scalar_type() &&
+                  key.scalar_type() == value.scalar_type(),
+              "Q/K/V dtypes must match");
+  TORCH_CHECK(query_weight.is_cuda() && key_weight.is_cuda() &&
+                  query_weight.is_contiguous() && key_weight.is_contiguous(),
+              "Q/K weights must be contiguous CUDA tensors");
+  TORCH_CHECK(query_weight.numel() == 128 && key_weight.numel() == 128,
+              "Q/K weights must contain 128 elements");
+  TORCH_CHECK(query_weight.scalar_type() == query.scalar_type() &&
+                  key_weight.scalar_type() == query.scalar_type(),
+              "Q/K weight dtypes must match activations");
+  TORCH_CHECK(positions.is_cuda() && positions.is_contiguous() &&
+                  positions.scalar_type() == torch::kInt64 &&
+                  positions.numel() == query.size(0),
+              "positions must be contiguous CUDA int64 with one entry per token");
+  TORCH_CHECK(cos_sin_cache.is_cuda() && cos_sin_cache.is_contiguous() &&
+                  cos_sin_cache.scalar_type() == torch::kFloat32 &&
+                  cos_sin_cache.size(-1) == 128,
+              "cos/sin cache must be contiguous CUDA float32 with width 128");
+  TORCH_CHECK(key_cache.is_cuda() && value_cache.is_cuda() &&
+                  key_cache.is_contiguous() && value_cache.is_contiguous(),
+              "KV caches must be contiguous CUDA tensors");
+  TORCH_CHECK(key_cache.sizes() == value_cache.sizes() &&
+                  key_cache.scalar_type() == query.scalar_type() &&
+                  value_cache.scalar_type() == query.scalar_type(),
+              "KV cache shapes and dtypes must match activations");
+  TORCH_CHECK(key_cache.size(-2) == key.size(1) && key_cache.size(-1) == 128,
+              "KV cache must end in [key_heads, 128]");
+  TORCH_CHECK(slot_mapping.is_cuda() && slot_mapping.is_contiguous() &&
+                  slot_mapping.scalar_type() == torch::kInt &&
+                  slot_mapping.numel() == query.size(0),
+              "slot_mapping must be contiguous CUDA int32 with one entry per token");
+  TORCH_CHECK(version == 1 || version == 4,
+              "QK Norm+RoPE+KV version must be 1 or 4 warps per block");
+  TORCH_CHECK(query.device() == key.device() && query.device() == value.device() &&
+                  query.device() == query_weight.device() &&
+                  query.device() == key_weight.device() &&
+                  query.device() == positions.device() &&
+                  query.device() == cos_sin_cache.device() &&
+                  query.device() == key_cache.device() &&
+                  query.device() == value_cache.device() &&
+                  query.device() == slot_mapping.device(),
+              "all tensors must be on the same CUDA device");
+  c10::cuda::CUDAGuard device_guard(query.device());
+
+  const int64_t warps_per_block = version;
+  const dim3 grid(
+      (query.size(1) + key.size(1) + warps_per_block - 1) / warps_per_block,
+      query.size(0));
+  const cudaStream_t stream = c10::cuda::getCurrentCUDAStream();
+  AT_DISPATCH_FLOATING_TYPES_AND2(
+      at::ScalarType::Half,
+      at::ScalarType::BFloat16,
+      query.scalar_type(),
+      "fused_qk_rms_norm_rope_kv_cuda",
+      [&] {
+        if (version == 1) {
+          fused_qk_rms_norm_rope_kv_h128_kernel<scalar_t, 1><<<grid, 32, 0, stream>>>(
+              query.data_ptr<scalar_t>(), key.data_ptr<scalar_t>(),
+              value.data_ptr<scalar_t>(), query_weight.data_ptr<scalar_t>(),
+              key_weight.data_ptr<scalar_t>(), positions.data_ptr<int64_t>(),
+              cos_sin_cache.data_ptr<float>(), key_cache.data_ptr<scalar_t>(),
+              value_cache.data_ptr<scalar_t>(), slot_mapping.data_ptr<int32_t>(),
+              query.size(1), key.size(1), static_cast<float>(epsilon));
+        } else {
+          fused_qk_rms_norm_rope_kv_h128_kernel<scalar_t, 4><<<grid, 128, 0, stream>>>(
+              query.data_ptr<scalar_t>(), key.data_ptr<scalar_t>(),
+              value.data_ptr<scalar_t>(), query_weight.data_ptr<scalar_t>(),
+              key_weight.data_ptr<scalar_t>(), positions.data_ptr<int64_t>(),
+              cos_sin_cache.data_ptr<float>(), key_cache.data_ptr<scalar_t>(),
+              value_cache.data_ptr<scalar_t>(), slot_mapping.data_ptr<int32_t>(),
+              query.size(1), key.size(1), static_cast<float>(epsilon));
+        }
+      });
+  C10_CUDA_KERNEL_LAUNCH_CHECK();
 }
 
 std::vector<torch::Tensor> fused_add_rms_norm_cuda(
