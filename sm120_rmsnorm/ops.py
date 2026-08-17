@@ -42,7 +42,7 @@ def fused_add_rms_norm(
     residual: torch.Tensor,
     weight: torch.Tensor,
     epsilon: float = 1e-6,
-    version: int = 4,
+    version: int = 0,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     _require_extension()
     output, residual_output = _C.fused_add_rms_norm(
@@ -58,9 +58,21 @@ def fused_add_rms_norm_out(
     output: torch.Tensor,
     residual_output: torch.Tensor,
     epsilon: float = 1e-6,
-    version: int = 4,
+    version: int = 0,
 ) -> None:
     _require_extension()
     _C.fused_add_rms_norm_out(
         x, residual, weight, output, residual_output, epsilon, version
     )
+
+
+def fused_add_rms_norm_inplace(
+    x: torch.Tensor,
+    residual: torch.Tensor,
+    weight: torch.Tensor,
+    epsilon: float = 1e-6,
+    version: int = 0,
+) -> None:
+    """Update ``residual += x`` and replace ``x`` with RMSNorm(residual)."""
+    _require_extension()
+    _C.fused_add_rms_norm_inplace(x, residual, weight, epsilon, version)

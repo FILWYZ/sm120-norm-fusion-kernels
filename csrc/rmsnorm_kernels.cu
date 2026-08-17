@@ -326,6 +326,19 @@ void rms_norm_out_cuda(
   C10_CUDA_KERNEL_LAUNCH_CHECK();
 }
 
+void fused_add_rms_norm_inplace_cuda(
+    torch::Tensor input,
+    torch::Tensor residual,
+    torch::Tensor weight,
+    double epsilon,
+    int64_t version) {
+  // Match the vLLM/FlashInfer contract: residual receives input + residual,
+  // and input receives the normalized result. Every kernel version completes
+  // its input reads before writing input, so these aliases are safe.
+  fused_add_rms_norm_out_cuda(
+      input, residual, weight, input, residual, epsilon, version);
+}
+
 std::vector<torch::Tensor> fused_add_rms_norm_cuda(
     torch::Tensor input,
     torch::Tensor residual,
@@ -359,13 +372,24 @@ void fused_add_rms_norm_out_cuda(
   TORCH_CHECK(output.scalar_type() == input.scalar_type(), "output dtype must match input");
   TORCH_CHECK(residual_output.scalar_type() == input.scalar_type(),
               "residual_output dtype must match input");
-  TORCH_CHECK(version >= 2 && version <= 4, "fused version must be 2, 3, or 4");
+  TORCH_CHECK(version >= 0 && version <= 4 && version != 1,
+              "fused version must be 0 (auto), 2, 3, or 4");
   c10::cuda::CUDAGuard device_guard(input.device());
 
   const int64_t hidden_size = input.size(-1);
   const int64_t rows = input.numel() / hidden_size;
   constexpr int kBlockSize = 256;
   const cudaStream_t stream = c10::cuda::getCurrentCUDAStream();
+  int64_t selected_version = version;
+  if (selected_version == 0) {
+    if (hidden_size != 1024) {
+      selected_version = 2;
+    } else if (rows > 32 && rows <= 192) {
+      selected_version = 3;
+    } else {
+      selected_version = 4;
+    }
+  }
 
   AT_DISPATCH_FLOATING_TYPES_AND2(
       at::ScalarType::Half,
@@ -373,7 +397,7 @@ void fused_add_rms_norm_out_cuda(
       input.scalar_type(),
       "fused_add_rms_norm_cuda",
       [&] {
-        if (version == 3) {
+        if (selected_version == 3) {
           TORCH_CHECK(hidden_size == 1024, "V3 is specialized for hidden_size=1024");
           fused_add_rms_norm_h1024_kernel<scalar_t><<<rows, kBlockSize, 0, stream>>>(
               input.data_ptr<scalar_t>(),
@@ -382,7 +406,7 @@ void fused_add_rms_norm_out_cuda(
               output.data_ptr<scalar_t>(),
               residual_output.data_ptr<scalar_t>(),
               static_cast<float>(epsilon));
-        } else if (version == 4) {
+        } else if (selected_version == 4) {
           TORCH_CHECK(hidden_size == 1024, "V4 is specialized for hidden_size=1024");
           constexpr int kPackedBlockSize = 1024 / Pack128<scalar_t>::kItems;
           fused_add_rms_norm_h1024_packed_kernel<scalar_t>

@@ -9,12 +9,18 @@ import torch.nn.functional as F
 
 from sm120_rmsnorm import (
     fused_add_rms_norm,
+    fused_add_rms_norm_inplace,
     fused_add_rms_norm_out,
     fused_add_rms_norm_reference,
     rms_norm,
     rms_norm_out,
     rms_norm_reference,
 )
+
+try:
+    from flashinfer.norm import fused_add_rmsnorm as flashinfer_fused_add_rmsnorm
+except ImportError:
+    flashinfer_fused_add_rmsnorm = None
 
 
 def latency_us(function: Callable[[], object], warmup: int, iterations: int) -> float:
@@ -51,6 +57,19 @@ def run_case(
     fused_output = torch.empty_like(x)
     residual_output = torch.empty_like(x)
 
+    # In-place implementations need stable values across repeated launches.
+    # A zero input and zero weight make every post-warmup invocation operate on
+    # unchanged buffers without adding reset kernels to the measured region.
+    inplace_weight = torch.zeros_like(weight)
+    custom_v3_input = torch.zeros_like(x)
+    custom_v3_residual = residual.clone()
+    custom_v4_input = torch.zeros_like(x)
+    custom_v4_residual = residual.clone()
+    custom_auto_input = torch.zeros_like(x)
+    custom_auto_residual = residual.clone()
+    flashinfer_input = torch.zeros_like(x)
+    flashinfer_residual = residual.clone()
+
     def torch_native_fused() -> tuple[torch.Tensor, torch.Tensor]:
         residual_out = x + residual
         return F.rms_norm(residual_out, (hidden,), weight, 1e-6), residual_out
@@ -81,6 +100,27 @@ def run_case(
         implementations["cuda_fused_v4_packed_out"] = lambda: fused_add_rms_norm_out(
             x, residual, weight, fused_output, residual_output, version=4
         )
+        implementations["cuda_fused_v3_inplace"] = lambda: fused_add_rms_norm_inplace(
+            custom_v3_input, custom_v3_residual, inplace_weight, version=3
+        )
+        implementations["cuda_fused_v4_inplace"] = lambda: fused_add_rms_norm_inplace(
+            custom_v4_input, custom_v4_residual, inplace_weight, version=4
+        )
+        implementations["cuda_fused_auto_inplace"] = lambda: fused_add_rms_norm_inplace(
+            custom_auto_input, custom_auto_residual, inplace_weight, version=0
+        )
+        if flashinfer_fused_add_rmsnorm is not None and dtype in (
+            torch.float16,
+            torch.bfloat16,
+        ):
+            implementations["flashinfer_fused_inplace"] = lambda: (
+                flashinfer_fused_add_rmsnorm(
+                    flashinfer_input,
+                    flashinfer_residual,
+                    inplace_weight,
+                    1e-6,
+                )
+            )
     if include_compile:
         implementations["torch_compile_fused"] = torch.compile(
             torch_native_fused, fullgraph=True

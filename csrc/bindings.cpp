@@ -31,6 +31,13 @@ void fused_add_rms_norm_out_cuda(
     double epsilon,
     int64_t version);
 
+void fused_add_rms_norm_inplace_cuda(
+    torch::Tensor input,
+    torch::Tensor residual,
+    torch::Tensor weight,
+    double epsilon,
+    int64_t version);
+
 PYBIND11_MODULE(TORCH_EXTENSION_NAME, module) {
   module.def("rms_norm", &rms_norm_cuda, "RMSNorm forward (CUDA)");
   module.def("rms_norm_out", &rms_norm_out_cuda, "RMSNorm forward into preallocated output (CUDA)");
@@ -42,4 +49,8 @@ PYBIND11_MODULE(TORCH_EXTENSION_NAME, module) {
       "fused_add_rms_norm_out",
       &fused_add_rms_norm_out_cuda,
       "Fused residual add + RMSNorm into preallocated outputs (CUDA)");
+  module.def(
+      "fused_add_rms_norm_inplace",
+      &fused_add_rms_norm_inplace_cuda,
+      "In-place fused residual add + RMSNorm (CUDA)");
 }

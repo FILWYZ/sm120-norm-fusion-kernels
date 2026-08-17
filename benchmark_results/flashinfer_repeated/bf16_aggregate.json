@@ -1,0 +1,1175 @@
+{
+  "environment": {
+    "gpu": "NVIDIA GeForce RTX 5060",
+    "compute_capability": [
+      12,
+      0
+    ],
+    "torch": "2.11.0+cu128",
+    "cuda": "12.8"
+  },
+  "protocol": {
+    "independent_processes": 5,
+    "warmup_per_sample": 100,
+    "iterations_per_sample": 500,
+    "within_process_samples": 3
+  },
+  "results": [
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.2794880867004395,
+      "min_latency_us": 5.154240131378174,
+      "max_latency_us": 7.691391944885254,
+      "relative_range_pct": 48.05677694203762,
+      "independent_run_latencies_us": [
+        7.691391944885254,
+        5.154240131378174,
+        5.6056318283081055,
+        5.157440185546875,
+        5.2794880867004395
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.236415863037109,
+      "min_latency_us": 5.148736000061035,
+      "max_latency_us": 5.391615867614746,
+      "relative_range_pct": 4.638284542451164,
+      "independent_run_latencies_us": [
+        5.280128002166748,
+        5.391615867614746,
+        5.236415863037109,
+        5.1902079582214355,
+        5.148736000061035
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.814464092254639,
+      "min_latency_us": 5.64083194732666,
+      "max_latency_us": 5.983615875244141,
+      "relative_range_pct": 5.895365806353467,
+      "independent_run_latencies_us": [
+        5.64083194732666,
+        5.814464092254639,
+        5.983615875244141,
+        5.9356160163879395,
+        5.765312194824219
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.273983955383301,
+      "min_latency_us": 6.000127792358398,
+      "max_latency_us": 6.690944194793701,
+      "relative_range_pct": 11.010809197918936,
+      "independent_run_latencies_us": [
+        6.273983955383301,
+        6.000127792358398,
+        6.690944194793701,
+        6.216063976287842,
+        6.350272178649902
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 8.027839660644531,
+      "min_latency_us": 7.8506879806518555,
+      "max_latency_us": 8.414336204528809,
+      "relative_range_pct": 7.02116942669106,
+      "independent_run_latencies_us": [
+        8.155839920043945,
+        7.865983963012695,
+        8.027839660644531,
+        7.8506879806518555,
+        8.414336204528809
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.849343776702881,
+      "min_latency_us": 7.589248180389404,
+      "max_latency_us": 8.013888359069824,
+      "relative_range_pct": 5.4098812685560596,
+      "independent_run_latencies_us": [
+        7.876800060272217,
+        7.849343776702881,
+        7.777791976928711,
+        7.589248180389404,
+        8.013888359069824
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.855423927307129,
+      "min_latency_us": 7.469632148742676,
+      "max_latency_us": 7.9351677894592285,
+      "relative_range_pct": 5.926295576464709,
+      "independent_run_latencies_us": [
+        7.9351677894592285,
+        7.469632148742676,
+        7.751359939575195,
+        7.855423927307129,
+        7.926527976989746
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.929344177246094,
+      "min_latency_us": 7.755072116851807,
+      "max_latency_us": 8.38815975189209,
+      "relative_range_pct": 7.984110928832933,
+      "independent_run_latencies_us": [
+        7.926271915435791,
+        8.25113582611084,
+        8.38815975189209,
+        7.929344177246094,
+        7.755072116851807
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.486783981323242,
+      "min_latency_us": 6.178624153137207,
+      "max_latency_us": 8.761919975280762,
+      "relative_range_pct": 39.823984112641696,
+      "independent_run_latencies_us": [
+        8.761919975280762,
+        6.284607887268066,
+        6.486783981323242,
+        6.178624153137207,
+        7.115647792816162
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.199039936065674,
+      "min_latency_us": 6.0748162269592285,
+      "max_latency_us": 6.3559041023254395,
+      "relative_range_pct": 4.534377553060388,
+      "independent_run_latencies_us": [
+        6.161280155181885,
+        6.199039936065674,
+        6.0748162269592285,
+        6.352960109710693,
+        6.3559041023254395
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.268671989440918,
+      "min_latency_us": 6.119872093200684,
+      "max_latency_us": 6.323647975921631,
+      "relative_range_pct": 3.250702590025314,
+      "independent_run_latencies_us": [
+        6.323647975921631,
+        6.119872093200684,
+        6.268671989440918,
+        6.172224044799805,
+        6.280896186828613
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.559872150421143,
+      "min_latency_us": 7.503168106079102,
+      "max_latency_us": 7.918015956878662,
+      "relative_range_pct": 5.4874982346950185,
+      "independent_run_latencies_us": [
+        7.559872150421143,
+        7.547967910766602,
+        7.647552013397217,
+        7.918015956878662,
+        7.503168106079102
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.865471839904785,
+      "min_latency_us": 7.827328205108643,
+      "max_latency_us": 7.975935935974121,
+      "relative_range_pct": 1.8893682908065372,
+      "independent_run_latencies_us": [
+        7.865471839904785,
+        7.975935935974121,
+        7.8460798263549805,
+        7.827328205108643,
+        7.902143955230713
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.754303932189941,
+      "min_latency_us": 7.724800109863281,
+      "max_latency_us": 8.21452808380127,
+      "relative_range_pct": 6.315563308074785,
+      "independent_run_latencies_us": [
+        7.822720050811768,
+        7.724800109863281,
+        7.754303932189941,
+        7.738304138183594,
+        8.21452808380127
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.737728118896484,
+      "min_latency_us": 7.5608320236206055,
+      "max_latency_us": 8.008768081665039,
+      "relative_range_pct": 5.788986782186345,
+      "independent_run_latencies_us": [
+        8.008768081665039,
+        7.804480075836182,
+        7.737728118896484,
+        7.5608320236206055,
+        7.59449577331543
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.892672061920166,
+      "min_latency_us": 7.8122878074646,
+      "max_latency_us": 8.225728034973145,
+      "relative_range_pct": 5.238279561915071,
+      "independent_run_latencies_us": [
+        7.917695999145508,
+        8.225728034973145,
+        7.8122878074646,
+        7.892672061920166,
+        7.8772478103637695
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.3527679443359375,
+      "min_latency_us": 5.261695861816406,
+      "max_latency_us": 8.10854434967041,
+      "relative_range_pct": 53.18460500172464,
+      "independent_run_latencies_us": [
+        8.10854434967041,
+        5.3527679443359375,
+        5.261695861816406,
+        5.4549760818481445,
+        5.332992076873779
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.408576011657715,
+      "min_latency_us": 5.275392055511475,
+      "max_latency_us": 6.114751815795898,
+      "relative_range_pct": 15.51905267625447,
+      "independent_run_latencies_us": [
+        5.9319682121276855,
+        5.275392055511475,
+        5.408576011657715,
+        5.284543991088867,
+        6.114751815795898
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.734975814819336,
+      "min_latency_us": 5.688960075378418,
+      "max_latency_us": 5.987135887145996,
+      "relative_range_pct": 5.199251424863617,
+      "independent_run_latencies_us": [
+        5.734975814819336,
+        5.90937614440918,
+        5.688960075378418,
+        5.734975814819336,
+        5.987135887145996
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.389440059661865,
+      "min_latency_us": 6.196671962738037,
+      "max_latency_us": 6.812992095947266,
+      "relative_range_pct": 9.645917755770366,
+      "independent_run_latencies_us": [
+        6.485439777374268,
+        6.3272318840026855,
+        6.812992095947266,
+        6.196671962738037,
+        6.389440059661865
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.490431785583496,
+      "min_latency_us": 5.2288641929626465,
+      "max_latency_us": 7.471551895141602,
+      "relative_range_pct": 40.84720090809057,
+      "independent_run_latencies_us": [
+        7.471551895141602,
+        5.490431785583496,
+        5.439104080200195,
+        5.2288641929626465,
+        5.519552230834961
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.360191822052002,
+      "min_latency_us": 5.157695770263672,
+      "max_latency_us": 5.388735771179199,
+      "relative_range_pct": 4.3102935227993395,
+      "independent_run_latencies_us": [
+        5.388735771179199,
+        5.225535869598389,
+        5.370175838470459,
+        5.157695770263672,
+        5.360191822052002
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.769408226013184,
+      "min_latency_us": 5.732736110687256,
+      "max_latency_us": 5.868224143981934,
+      "relative_range_pct": 2.348387009325974,
+      "independent_run_latencies_us": [
+        5.732736110687256,
+        5.749311923980713,
+        5.868224143981934,
+        5.841087818145752,
+        5.769408226013184
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.429312229156494,
+      "min_latency_us": 6.352384090423584,
+      "max_latency_us": 6.823616027832031,
+      "relative_range_pct": 7.329429970307593,
+      "independent_run_latencies_us": [
+        6.429312229156494,
+        6.352384090423584,
+        6.823616027832031,
+        6.364607810974121,
+        6.5002241134643555
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.4099202156066895,
+      "min_latency_us": 5.096896171569824,
+      "max_latency_us": 7.7696638107299805,
+      "relative_range_pct": 49.4049363509961,
+      "independent_run_latencies_us": [
+        7.7696638107299805,
+        5.096896171569824,
+        5.4099202156066895,
+        5.23967981338501,
+        5.414271831512451
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.1629438400268555,
+      "min_latency_us": 5.061888217926025,
+      "max_latency_us": 5.320256233215332,
+      "relative_range_pct": 5.004277080960128,
+      "independent_run_latencies_us": [
+        5.1629438400268555,
+        5.320256233215332,
+        5.320000171661377,
+        5.157120227813721,
+        5.061888217926025
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.6862077713012695,
+      "min_latency_us": 5.590976238250732,
+      "max_latency_us": 5.838335990905762,
+      "relative_range_pct": 4.3501708450309025,
+      "independent_run_latencies_us": [
+        5.6862077713012695,
+        5.590976238250732,
+        5.711872100830078,
+        5.838335990905762,
+        5.684607982635498
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.29311990737915,
+      "min_latency_us": 6.2707839012146,
+      "max_latency_us": 6.390016078948975,
+      "relative_range_pct": 1.894643348437814,
+      "independent_run_latencies_us": [
+        6.390016078948975,
+        6.3089280128479,
+        6.29311990737915,
+        6.285247802734375,
+        6.2707839012146
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.800384044647217,
+      "min_latency_us": 7.53388786315918,
+      "max_latency_us": 7.902143955230713,
+      "relative_range_pct": 4.720999504174901,
+      "independent_run_latencies_us": [
+        7.53388786315918,
+        7.800384044647217,
+        7.902143955230713,
+        7.562687873840332,
+        7.804160118103027
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.740287780761719,
+      "min_latency_us": 7.67193603515625,
+      "max_latency_us": 8.74630355834961,
+      "relative_range_pct": 13.880201274475498,
+      "independent_run_latencies_us": [
+        7.717631816864014,
+        8.74630355834961,
+        7.740287780761719,
+        7.67193603515625,
+        7.838399887084961
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.697152137756348,
+      "min_latency_us": 7.571008205413818,
+      "max_latency_us": 7.909311771392822,
+      "relative_range_pct": 4.395178371485541,
+      "independent_run_latencies_us": [
+        7.697152137756348,
+        7.571008205413818,
+        7.909311771392822,
+        7.648896217346191,
+        7.860288143157959
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.690112113952637,
+      "min_latency_us": 7.455743789672852,
+      "max_latency_us": 7.983424186706543,
+      "relative_range_pct": 6.861803693034448,
+      "independent_run_latencies_us": [
+        7.700096130371094,
+        7.983424186706543,
+        7.455743789672852,
+        7.545216083526611,
+        7.690112113952637
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.247551918029785,
+      "min_latency_us": 5.109375953674316,
+      "max_latency_us": 7.659327983856201,
+      "relative_range_pct": 48.59317392212243,
+      "independent_run_latencies_us": [
+        7.659327983856201,
+        5.247551918029785,
+        5.110335826873779,
+        5.109375953674316,
+        5.349760055541992
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.251840114593506,
+      "min_latency_us": 5.205696105957031,
+      "max_latency_us": 5.580351829528809,
+      "relative_range_pct": 7.133799114156311,
+      "independent_run_latencies_us": [
+        5.205696105957031,
+        5.206719875335693,
+        5.251840114593506,
+        5.580351829528809,
+        5.286464214324951
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 5.798463821411133,
+      "min_latency_us": 5.535615921020508,
+      "max_latency_us": 5.981056213378906,
+      "relative_range_pct": 7.682039693230243,
+      "independent_run_latencies_us": [
+        5.646207809448242,
+        5.535615921020508,
+        5.798463821411133,
+        5.981056213378906,
+        5.891071796417236
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.27788782119751,
+      "min_latency_us": 6.144768238067627,
+      "max_latency_us": 6.503744125366211,
+      "relative_range_pct": 5.718099741866831,
+      "independent_run_latencies_us": [
+        6.346816062927246,
+        6.503744125366211,
+        6.242496013641357,
+        6.27788782119751,
+        6.144768238067627
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 8.110464096069336,
+      "min_latency_us": 7.948863983154297,
+      "max_latency_us": 15.803008079528809,
+      "relative_range_pct": 96.83963831590047,
+      "independent_run_latencies_us": [
+        15.803008079528809,
+        8.186880111694336,
+        8.110464096069336,
+        7.948863983154297,
+        8.081855773925781
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.988224029541016,
+      "min_latency_us": 6.866176128387451,
+      "max_latency_us": 8.176575660705566,
+      "relative_range_pct": 18.75153868534724,
+      "independent_run_latencies_us": [
+        8.176575660705566,
+        7.272384166717529,
+        6.866176128387451,
+        6.937664031982422,
+        6.988224029541016
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.865536212921143,
+      "min_latency_us": 6.700479984283447,
+      "max_latency_us": 7.370560169219971,
+      "relative_range_pct": 9.760056085283079,
+      "independent_run_latencies_us": [
+        6.890560150146484,
+        6.700479984283447,
+        6.715519905090332,
+        6.865536212921143,
+        7.370560169219971
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.314496040344238,
+      "min_latency_us": 7.228799819946289,
+      "max_latency_us": 7.5386881828308105,
+      "relative_range_pct": 4.236633134740714,
+      "independent_run_latencies_us": [
+        7.5386881828308105,
+        7.228799819946289,
+        7.248960018157959,
+        7.314496040344238,
+        7.4179840087890625
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.878015995025635,
+      "min_latency_us": 7.676864147186279,
+      "max_latency_us": 16.669824600219727,
+      "relative_range_pct": 114.1526046495947,
+      "independent_run_latencies_us": [
+        16.669824600219727,
+        7.822720050811768,
+        7.878015995025635,
+        7.936575889587402,
+        7.676864147186279
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.970304012298584,
+      "min_latency_us": 6.914239883422852,
+      "max_latency_us": 7.996096134185791,
+      "relative_range_pct": 15.520933503819695,
+      "independent_run_latencies_us": [
+        7.996096134185791,
+        6.914239883422852,
+        6.970304012298584,
+        6.928256034851074,
+        6.9925761222839355
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.919295787811279,
+      "min_latency_us": 6.768896102905273,
+      "max_latency_us": 7.398464202880859,
+      "relative_range_pct": 9.098730843167665,
+      "independent_run_latencies_us": [
+        6.852992057800293,
+        6.926720142364502,
+        6.768896102905273,
+        6.919295787811279,
+        7.398464202880859
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.946112155914307,
+      "min_latency_us": 6.871679782867432,
+      "max_latency_us": 7.194943904876709,
+      "relative_range_pct": 4.653885724174958,
+      "independent_run_latencies_us": [
+        7.050816059112549,
+        7.194943904876709,
+        6.922175884246826,
+        6.946112155914307,
+        6.871679782867432
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 7.97324800491333,
+      "min_latency_us": 6.045760154724121,
+      "max_latency_us": 8.151679992675781,
+      "relative_range_pct": 26.412320758791598,
+      "independent_run_latencies_us": [
+        8.151679992675781,
+        7.97324800491333,
+        7.9706878662109375,
+        7.996799945831299,
+        6.045760154724121
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.055039882659912,
+      "min_latency_us": 5.929728031158447,
+      "max_latency_us": 8.282560348510742,
+      "relative_range_pct": 38.857420643755056,
+      "independent_run_latencies_us": [
+        8.282560348510742,
+        5.929728031158447,
+        5.964223861694336,
+        6.115839958190918,
+        6.055039882659912
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.136256217956543,
+      "min_latency_us": 6.057151794433594,
+      "max_latency_us": 6.341248035430908,
+      "relative_range_pct": 4.629797565589958,
+      "independent_run_latencies_us": [
+        6.341248035430908,
+        6.079232215881348,
+        6.057151794433594,
+        6.136256217956543,
+        6.338304042816162
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.475200176239014,
+      "min_latency_us": 6.180480003356934,
+      "max_latency_us": 7.150271892547607,
+      "relative_range_pct": 14.97701789590013,
+      "independent_run_latencies_us": [
+        6.632256031036377,
+        6.475200176239014,
+        7.150271892547607,
+        6.365312099456787,
+        6.180480003356934
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.08460807800293,
+      "min_latency_us": 5.855743885040283,
+      "max_latency_us": 8.331071853637695,
+      "relative_range_pct": 40.681798019928614,
+      "independent_run_latencies_us": [
+        8.331071853637695,
+        6.424384117126465,
+        6.08460807800293,
+        5.890751838684082,
+        5.855743885040283
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.035327911376953,
+      "min_latency_us": 5.965184211730957,
+      "max_latency_us": 7.353536128997803,
+      "relative_range_pct": 23.00375286402781,
+      "independent_run_latencies_us": [
+        6.11027193069458,
+        6.007999897003174,
+        6.035327911376953,
+        5.965184211730957,
+        7.353536128997803
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.135615825653076,
+      "min_latency_us": 6.028223991394043,
+      "max_latency_us": 6.151103973388672,
+      "relative_range_pct": 2.0027326593830463,
+      "independent_run_latencies_us": [
+        6.061567783355713,
+        6.028223991394043,
+        6.135615825653076,
+        6.138495922088623,
+        6.151103973388672
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 6.396160125732422,
+      "min_latency_us": 6.33516788482666,
+      "max_latency_us": 6.531839847564697,
+      "relative_range_pct": 3.0748442639327496,
+      "independent_run_latencies_us": [
+        6.396160125732422,
+        6.503168106079102,
+        6.33516788482666,
+        6.362112045288086,
+        6.531839847564697
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 84.168701171875,
+      "min_latency_us": 83.13017272949219,
+      "max_latency_us": 115.1251220703125,
+      "relative_range_pct": 38.012882336731884,
+      "independent_run_latencies_us": [
+        115.1251220703125,
+        83.22509002685547,
+        83.13017272949219,
+        84.168701171875,
+        102.54534149169922
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 83.70630645751953,
+      "min_latency_us": 81.9161605834961,
+      "max_latency_us": 94.53241729736328,
+      "relative_range_pct": 15.072050419844848,
+      "independent_run_latencies_us": [
+        94.53241729736328,
+        83.70630645751953,
+        84.01631927490234,
+        81.9161605834961,
+        82.3786849975586
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 83.71270751953125,
+      "min_latency_us": 82.68831634521484,
+      "max_latency_us": 85.45311737060547,
+      "relative_range_pct": 3.3027256044078626,
+      "independent_run_latencies_us": [
+        83.0676498413086,
+        85.04492950439453,
+        85.45311737060547,
+        82.68831634521484,
+        83.71270751953125
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 83.482177734375,
+      "min_latency_us": 81.77452850341797,
+      "max_latency_us": 84.53472137451172,
+      "relative_range_pct": 3.306325908119189,
+      "independent_run_latencies_us": [
+        83.482177734375,
+        83.62348937988281,
+        84.53472137451172,
+        82.93247985839844,
+        81.77452850341797
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 17.77222442626953,
+      "min_latency_us": 17.260223388671875,
+      "max_latency_us": 43.01087951660156,
+      "relative_range_pct": 144.89270172543542,
+      "independent_run_latencies_us": [
+        43.01087951660156,
+        17.260223388671875,
+        17.907712936401367,
+        17.665407180786133,
+        17.77222442626953
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 17.51807975769043,
+      "min_latency_us": 16.932031631469727,
+      "max_latency_us": 17.704896926879883,
+      "relative_range_pct": 4.411815142415188,
+      "independent_run_latencies_us": [
+        17.542591094970703,
+        17.704896926879883,
+        17.51807975769043,
+        16.932031631469727,
+        17.28870391845703
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 17.694719314575195,
+      "min_latency_us": 17.361215591430664,
+      "max_latency_us": 18.20742416381836,
+      "relative_range_pct": 4.782266151521662,
+      "independent_run_latencies_us": [
+        17.785919189453125,
+        17.694719314575195,
+        17.361215591430664,
+        18.20742416381836,
+        17.52947235107422
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 17.490367889404297,
+      "min_latency_us": 16.594688415527344,
+      "max_latency_us": 17.742591857910156,
+      "relative_range_pct": 6.563060592214385,
+      "independent_run_latencies_us": [
+        17.509183883666992,
+        17.490367889404297,
+        17.742591857910156,
+        16.594688415527344,
+        17.280576705932617
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 10.012415885925293,
+      "min_latency_us": 9.817855834960938,
+      "max_latency_us": 23.67487907409668,
+      "relative_range_pct": 138.39839851853247,
+      "independent_run_latencies_us": [
+        23.167423248291016,
+        9.869183540344238,
+        10.012415885925293,
+        9.817855834960938,
+        23.67487907409668
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 9.816703796386719,
+      "min_latency_us": 9.538432121276855,
+      "max_latency_us": 9.920448303222656,
+      "relative_range_pct": 3.8914913790758496,
+      "independent_run_latencies_us": [
+        9.816703796386719,
+        9.538432121276855,
+        9.77836799621582,
+        9.863807678222656,
+        9.920448303222656
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 9.823871612548828,
+      "min_latency_us": 9.510335922241211,
+      "max_latency_us": 10.011136054992676,
+      "relative_range_pct": 5.097787842745748,
+      "independent_run_latencies_us": [
+        9.510335922241211,
+        9.823871612548828,
+        9.592063903808594,
+        9.876864433288574,
+        10.011136054992676
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 9.889599800109863,
+      "min_latency_us": 9.692671775817871,
+      "max_latency_us": 10.034751892089844,
+      "relative_range_pct": 3.458988464509681,
+      "independent_run_latencies_us": [
+        9.843328475952148,
+        9.692671775817871,
+        10.034751892089844,
+        9.889599800109863,
+        9.913472175598145
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 109.03890991210938,
+      "min_latency_us": 85.07788848876953,
+      "max_latency_us": 135.35072326660156,
+      "relative_range_pct": 46.10540844397139,
+      "independent_run_latencies_us": [
+        129.99661254882812,
+        85.07788848876953,
+        92.39411163330078,
+        135.35072326660156,
+        109.03890991210938
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 83.38508605957031,
+      "min_latency_us": 82.87583923339844,
+      "max_latency_us": 127.48966217041016,
+      "relative_range_pct": 53.50336018738363,
+      "independent_run_latencies_us": [
+        127.48966217041016,
+        83.20575714111328,
+        82.87583923339844,
+        85.2576675415039,
+        83.38508605957031
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 84.94976043701172,
+      "min_latency_us": 83.82733154296875,
+      "max_latency_us": 85.06342315673828,
+      "relative_range_pct": 1.4550854615841613,
+      "independent_run_latencies_us": [
+        85.06342315673828,
+        84.94976043701172,
+        83.82733154296875,
+        84.5317153930664,
+        84.95558166503906
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "median_latency_us": 83.2037124633789,
+      "min_latency_us": 82.95724487304688,
+      "max_latency_us": 83.90573120117188,
+      "relative_range_pct": 1.1399567399621315,
+      "independent_run_latencies_us": [
+        83.60761260986328,
+        83.90573120117188,
+        82.95724487304688,
+        83.2037124633789,
+        82.98489379882812
+      ]
+    }
+  ]
+}

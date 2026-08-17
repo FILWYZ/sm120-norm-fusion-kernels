@@ -18,9 +18,23 @@ measurements, and Nsight Compute.
 | V2 fused | residual add + generic RMSNorm | remove one launch and expose fusion benefit |
 | V3 fused | 1024-wide register-cached fast path | retain four values/thread across reduction |
 | V4 fused | dtype-aware 128-bit packed fast path | reduce load/store instruction count |
+| Auto | measured SM120 shape dispatch | choose V4/V3/V4 by row-count bucket; fall back to V2 |
 
-The next milestone is an empirical SM120 dispatch table across token counts and
-hidden sizes, based on repeated measurements rather than a fixed version choice.
+The fused operator also exposes an in-place API matching FlashInfer/vLLM
+semantics: `residual += input`, then `input = RMSNorm(residual) * weight`.
+
+## Industrial fused baseline
+
+Against FlashInfer 0.6.6 `fused_add_rmsnorm` with identical in-place semantics,
+the auto-dispatched custom kernel lowers median operator latency by 2.9–13.2%
+for FP16 and 1.9–13.2% for BF16 at `hidden_size=1024`, tokens 1–256. Results are
+medians across five independent Python processes; each process uses three CUDA
+Event samples, 100 warmups, and 500 measured iterations. See
+[the industrial-baseline report](docs/INDUSTRIAL_BASELINE.md).
+
+CUDA 13.3 `nvdisasm` confirms that the CUDA 12.8-built V4 FP16/BF16 kernels
+contain `LDG.E.128` and `STG.E.128`. Run `bash scripts/check_sass.sh` to verify
+the generated machine instructions locally.
 
 ## First measured result
 
@@ -70,6 +84,7 @@ estimate. Nsight Compute counters should be used for hardware-level conclusions.
 
 ```bash
 bash scripts/profile_ncu.sh
+bash scripts/check_sass.sh
 ```
 
 ## Correctness contract
@@ -79,7 +94,10 @@ bash scripts/profile_ncu.sh
 - FP16, BF16, and FP32 input with FP32 accumulation;
 - arbitrary leading dimensions;
 - generic V1/V2 supports non-multiple hidden sizes;
-- V3 intentionally requires `hidden_size=1024`.
+- V3/V4 intentionally require `hidden_size=1024`; auto dispatch falls back to
+  V2 for other hidden sizes.
+- 105 GPU correctness tests cover allocating, preallocated, in-place, manual,
+  and auto-dispatched paths.
 
 ## Attribution
 

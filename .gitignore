@@ -8,3 +8,6 @@ dist/
 .venv/
 benchmark_results/*.ncu-rep
 benchmark_results/repeated/*_run_*.json
+benchmark_results/*_dispatch_probe.json
+benchmark_results/*_auto_validation.json
+benchmark_results/*_flashinfer_fair.json
