@@ -7,3 +7,4 @@ dist/
 .pytest_cache/
 .venv/
 benchmark_results/*.ncu-rep
+benchmark_results/repeated/*_run_*.json

@@ -25,9 +25,10 @@ hidden sizes, based on repeated measurements rather than a fixed version choice.
 ## First measured result
 
 On RTX 5060 Laptop/SM120 with PyTorch 2.11.0+cu128, the best preallocated custom
-kernel takes 5.08–6.32 μs for FP16 `hidden_size=1024`, tokens 1–256, versus
-17.20–17.53 μs for PyTorch-native residual add followed by RMSNorm (2.72–3.41×).
-BF16 shows 2.53–3.34×. See [the first-results report](docs/FIRST_RESULTS.md) for
+kernel takes 5.08–6.36 μs for FP16 `hidden_size=1024`, tokens 1–256, versus
+16.82–17.53 μs for PyTorch-native residual add followed by RMSNorm (2.65–3.40×).
+BF16 shows 2.67–3.27×. These ranges use medians from five independent Python
+processes. See [the first-results report](docs/FIRST_RESULTS.md) for
 the exact protocol, all values, limitations, and Nsight Compute trade-offs.
 
 ## Build in WSL
