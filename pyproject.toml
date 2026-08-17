@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68", "wheel", "torch"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sm120-fused-rmsnorm"
+version = "0.1.0"
+description = "CUDA C++ RMSNorm and fused residual-add RMSNorm kernels for LLM inference"
+requires-python = ">=3.10"
+dependencies = ["torch>=2.4"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
