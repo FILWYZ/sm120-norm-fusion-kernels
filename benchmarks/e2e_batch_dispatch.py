@@ -11,11 +11,23 @@ from nanovllm import LLM, SamplingParams
 
 
 def worker(args):
+    if args.rmsnorm_version in {"old_auto", "v3", "v4"}:
+        import nanovllm.layers.layernorm as layernorm
+        from sm120_rmsnorm import fused_add_rms_norm_inplace as fused_rmsnorm
+
+        def selected_dispatch(x, residual, weight, epsilon):
+            if args.rmsnorm_version == "old_auto":
+                version = 3 if x.shape[-1] == 1024 and 33 <= x.shape[0] <= 192 else 0
+            else:
+                version = int(args.rmsnorm_version[1:])
+            return fused_rmsnorm(x, residual, weight, epsilon, version=version)
+
+        layernorm.fused_add_rms_norm_inplace = selected_dispatch
     llm = LLM(
         args.model,
         attention_backend="flashinfer",
         rmsnorm_backend=args.rmsnorm_backend,
-        qk_norm_rope_backend="torch",
+        qk_norm_rope_backend=args.qk_norm_rope_backend,
         max_model_len=args.max_model_len,
         max_num_seqs=max(args.requests),
         max_num_batched_tokens=max(2048, args.max_model_len * max(args.requests)),
@@ -50,7 +62,10 @@ def worker(args):
         },
         "model": args.model,
         "rmsnorm_backend": args.rmsnorm_backend,
-        "qk_norm_rope_backend": "torch",
+        "rmsnorm_version": args.rmsnorm_version,
+        "qk_norm_rope_backend": args.qk_norm_rope_backend,
+        "resolved_rmsnorm_backend": llm.model_runner.config.rmsnorm_backend,
+        "resolved_qk_norm_rope_backend": llm.model_runner.config.qk_norm_rope_backend,
         "results": results,
     }
     args.worker_output.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
@@ -61,6 +76,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default="/home/asus/models/Qwen3-0.6B")
     parser.add_argument("--rmsnorm-backend", choices=["torch", "sm120"], default="sm120")
+    parser.add_argument("--qk-norm-rope-backend", choices=["torch", "sm120"], default="torch")
+    parser.add_argument("--rmsnorm-version", choices=["auto", "old_auto", "new_auto", "v3", "v4"], default="auto")
     parser.add_argument("--requests", type=int, nargs="+", default=[33, 64])
     parser.add_argument("--input-len", type=int, default=64)
     parser.add_argument("--output-len", type=int, default=16)
@@ -81,6 +98,8 @@ def main():
         command = [
             sys.executable, str(Path(__file__).resolve()),
             "--model", args.model, "--rmsnorm-backend", args.rmsnorm_backend,
+            "--qk-norm-rope-backend", args.qk_norm_rope_backend,
+            "--rmsnorm-version", args.rmsnorm_version,
             "--requests", *map(str, args.requests),
             "--input-len", str(args.input_len), "--output-len", str(args.output_len),
             "--max-model-len", str(args.max_model_len),
@@ -109,9 +128,11 @@ def main():
         "method": "independent_processes",
         "runs": args.runs,
         "rmsnorm_backend": args.rmsnorm_backend,
+        "rmsnorm_version": args.rmsnorm_version,
+        "qk_norm_rope_backend": args.qk_norm_rope_backend,
         "environment": payloads[-1]["environment"],
         "config": {"model": args.model, "input_len": args.input_len, "output_len": args.output_len,
-                   "max_model_len": args.max_model_len, "qk_norm_rope_backend": "torch"},
+                   "max_model_len": args.max_model_len, "qk_norm_rope_backend": args.qk_norm_rope_backend},
         "workloads": workloads,
     }
     out = args.output_dir / "summary.json"

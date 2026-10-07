@@ -41,3 +41,11 @@ V4 相对 V3 的加速比大于 1 表示 V4 更快。
 
 在这组负载中，V4 对 batch 33 有小幅收益，对 batch 64 基本持平。该结果只支持保留本机高并发分发选择，不代表所有形状都有端到端加速；微基准收益不可直接等同于模型吞吐收益。
 - 仓库最初记载的环境是 PyTorch 2.11+cu128；这次在当前 PyTorch 2.14+cu130/NVCC 13.3 下编译和测量，结果只对当前运行环境和记录形状负责。
+
+## 扩展真实负载复测（2026-10-07）
+
+完成扩展安装到 nano-vLLM 虚拟环境后的新一轮验证，报告和逐进程数据见 [RTX5060_EXTENSION_VALIDATION.md](RTX5060_EXTENSION_VALIDATION.md)。
+
+新增交错测试覆盖 Prompt/Decode=(64/32、256/16、64/64)，batch=8–64，5 组独立进程配对。旧 Auto 与新 Auto 的端到端吞吐差异多数在 ±1%，未证明 V3→V4 dispatch 在此矩阵上有稳定的端到端收益；因此不增加新的 shape 分支。单行 Q/K Norm+RoPE+KV 融合在两种 Decode 长度下仍有约 +2.8% 输出吞吐收益，而 batch 8–64 的收益不稳定，生产范围保持 batch=1。
+
+本次还用 NCU 采集 V3/V4 和 Q/K 融合 kernel 资源计数器：三者均无 local spill；V4 使用更多寄存器且活跃 warp 比例较低。现有结果不支持仅凭 Occupancy 改线程布局。

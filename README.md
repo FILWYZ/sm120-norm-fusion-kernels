@@ -136,6 +136,7 @@ python -m benchmarks.profile_qk_norm_rope \
 - [`FIRST_RESULTS.md`](docs/FIRST_RESULTS.md)：PyTorch Native 基线与 NCU 结果。
 - [`INDUSTRIAL_BASELINE.md`](docs/INDUSTRIAL_BASELINE.md)：FlashInfer 公平对比。
 - [`QK_NORM_ROPE_KV_RESULTS.md`](docs/QK_NORM_ROPE_KV_RESULTS.md)：Qwen3 融合与端到端调度。
+- [`RTX5060_EXTENSION_VALIDATION.md`](docs/RTX5060_EXTENSION_VALIDATION.md)：当前 RTX 5060 环境的虚拟环境安装、真实负载 A/B 和 NCU 数据。
 
 ## 正确性契约
 
