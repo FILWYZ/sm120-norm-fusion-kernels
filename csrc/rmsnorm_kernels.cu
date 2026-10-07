@@ -753,9 +753,9 @@ void fused_add_rms_norm_out_cuda(
   if (selected_version == 0) {
     if (hidden_size != 1024) {
       selected_version = 2;
-    } else if (rows > 32 && rows <= 192) {
-      selected_version = 3;
     } else {
+      // Paired RTX 5060 SM120 measurements favor V4 over V3 through the
+      // former mid-row dispatch range; see docs/RTX5060_LOCAL_TUNING.md.
       selected_version = 4;
     }
   }

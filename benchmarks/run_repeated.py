@@ -12,6 +12,7 @@ def main() -> None:
     parser.add_argument("--repeats", type=int, default=5)
     parser.add_argument("--warmup", type=int, default=100)
     parser.add_argument("--iterations", type=int, default=500)
+    parser.add_argument("--tokens", type=int, nargs="+", default=[1, 16, 64, 256])
     parser.add_argument("--output-dir", type=Path, default=Path("benchmark_results/repeated"))
     args = parser.parse_args()
 
@@ -24,10 +25,7 @@ def main() -> None:
             "-m",
             "benchmarks.benchmark",
             "--tokens",
-            "1",
-            "16",
-            "64",
-            "256",
+            *[str(token) for token in args.tokens],
             "--hidden",
             "1024",
             "--dtype",

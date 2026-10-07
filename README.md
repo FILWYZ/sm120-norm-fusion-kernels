@@ -41,6 +41,12 @@ residual = residual + input
 input = RMSNorm(residual) * weight
 ```
 
+## 本机 RTX 5060 调度实测
+
+在 RTX 5060 SM120 上，对 V3/V4 做了 5 个独立进程、每进程 10 轮交替顺序的配对测试。对测到的 1–256 行、FP16/BF16 形状，V4 总体更快；FP16 256 行 V3 仅快不到 1%，低于值得增加专用分支的幅度。因此 hidden size 1024 的 Auto 路径改为统一使用 V4，其他宽度仍回退 V2。结果和环境记录见 [本机调度结果](docs/RTX5060_LOCAL_TUNING.md)。
+
+该 dispatch 是本机实测选择，不是对所有 SM120 卡的普遍最优结论；迁移到不同功耗/散热配置后应重新测量。
+
 ## Qwen3 Decode 融合
 
 生产快速路径跨越真实的算子边界，一次完成：

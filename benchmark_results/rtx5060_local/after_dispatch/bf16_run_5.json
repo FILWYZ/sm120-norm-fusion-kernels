@@ -1,0 +1,2002 @@
+{
+  "environment": {
+    "gpu": "NVIDIA GeForce RTX 5060",
+    "compute_capability": [
+      12,
+      0
+    ],
+    "torch": "2.14.1+cu130",
+    "cuda": "13.0"
+  },
+  "results": [
+    {
+      "implementation": "torch_rms",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 82.09600448608398,
+      "effective_bandwidth_gbps_lower_bound": 0.07483920853957592,
+      "samples_us": [
+        82.43120193481445,
+        82.09600448608398,
+        81.7790412902832
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 9.971280097961426,
+      "effective_bandwidth_gbps_lower_bound": 0.6161696331503222,
+      "samples_us": [
+        10.634160041809082,
+        9.589359760284424,
+        9.971280097961426
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.113040089607239,
+      "effective_bandwidth_gbps_lower_bound": 1.4396094877858931,
+      "samples_us": [
+        7.810400128364563,
+        6.7713600397109985,
+        7.113040089607239
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.886640191078186,
+      "effective_bandwidth_gbps_lower_bound": 1.4869369846367428,
+      "samples_us": [
+        6.886640191078186,
+        6.789600253105164,
+        7.646399736404419
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.645120143890381,
+      "effective_bandwidth_gbps_lower_bound": 1.8139560786996856,
+      "samples_us": [
+        5.498560070991516,
+        5.960800051689148,
+        5.645120143890381
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 82.75032043457031,
+      "effective_bandwidth_gbps_lower_bound": 0.12374574438169875,
+      "samples_us": [
+        82.23872184753418,
+        83.38312149047852,
+        82.75032043457031
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 17.656879425048828,
+      "effective_bandwidth_gbps_lower_bound": 0.5799439274344869,
+      "samples_us": [
+        17.810879945755005,
+        17.656879425048828,
+        17.461040019989014
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.05728018283844,
+      "effective_bandwidth_gbps_lower_bound": 1.2709003246294739,
+      "samples_us": [
+        7.998160123825073,
+        8.05728018283844,
+        8.332080245018005
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.220960021018982,
+      "effective_bandwidth_gbps_lower_bound": 1.6460481927872455,
+      "samples_us": [
+        6.7982399463653564,
+        6.220960021018982,
+        5.960800051689148
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.9420799016952515,
+      "effective_bandwidth_gbps_lower_bound": 1.2893347997939748,
+      "samples_us": [
+        7.883279919624329,
+        9.376400113105774,
+        7.9420799016952515
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.28768002986908,
+      "effective_bandwidth_gbps_lower_bound": 1.9365770890364442,
+      "samples_us": [
+        5.104479789733887,
+        5.32256007194519,
+        5.28768002986908
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.937279939651489,
+      "effective_bandwidth_gbps_lower_bound": 1.2901145074706308,
+      "samples_us": [
+        8.29479992389679,
+        7.937279939651489,
+        7.9257601499557495
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.0229597091674805,
+      "effective_bandwidth_gbps_lower_bound": 2.038638689717304,
+      "samples_us": [
+        5.0229597091674805,
+        5.016239881515503,
+        5.042960047721863
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.159440040588379,
+      "effective_bandwidth_gbps_lower_bound": 1.9847115034662246,
+      "samples_us": [
+        6.124879717826843,
+        5.0568801164627075,
+        5.159440040588379
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.0676000118255615,
+      "effective_bandwidth_gbps_lower_bound": 2.020680396263383,
+      "samples_us": [
+        4.978080093860626,
+        5.0676000118255615,
+        5.108240246772766
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.310959815979004,
+      "effective_bandwidth_gbps_lower_bound": 1.9280883973535385,
+      "samples_us": [
+        6.0944002866744995,
+        5.310959815979004,
+        5.019199848175049
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 1,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.325119733810425,
+      "effective_bandwidth_gbps_lower_bound": 1.6189416850503073,
+      "samples_us": [
+        6.325119733810425,
+        6.531280279159546,
+        6.2641602754592896
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 82.85296440124512,
+      "effective_bandwidth_gbps_lower_bound": 1.186487420340541,
+      "samples_us": [
+        83.12408447265625,
+        82.85296440124512,
+        82.78375625610352
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 9.897199869155884,
+      "effective_bandwidth_gbps_lower_bound": 9.93250629467021,
+      "samples_us": [
+        9.83464002609253,
+        10.094799995422363,
+        9.897199869155884
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.836400032043457,
+      "effective_bandwidth_gbps_lower_bound": 23.965829856657297,
+      "samples_us": [
+        6.836400032043457,
+        6.8750399351119995,
+        6.836400032043457
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.7479201555252075,
+      "effective_bandwidth_gbps_lower_bound": 21.146320136399726,
+      "samples_us": [
+        7.8863197565078735,
+        6.911200284957886,
+        7.7479201555252075
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.98360002040863,
+      "effective_bandwidth_gbps_lower_bound": 27.38150936579666,
+      "samples_us": [
+        5.661919713020325,
+        5.98360002040863,
+        6.796240210533142
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 81.48263931274414,
+      "effective_bandwidth_gbps_lower_bound": 2.010735064326456,
+      "samples_us": [
+        82.52943992614746,
+        81.48263931274414,
+        79.86599922180176
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 17.37887978553772,
+      "effective_bandwidth_gbps_lower_bound": 9.427535147365694,
+      "samples_us": [
+        17.37887978553772,
+        17.407599687576294,
+        17.176159620285034
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.895280122756958,
+      "effective_bandwidth_gbps_lower_bound": 20.751638631257155,
+      "samples_us": [
+        7.895280122756958,
+        8.410080075263977,
+        7.893999814987183
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.914639830589294,
+      "effective_bandwidth_gbps_lower_bound": 27.700756883395233,
+      "samples_us": [
+        5.914639830589294,
+        6.051520109176636,
+        5.853679776191711
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.903040051460266,
+      "effective_bandwidth_gbps_lower_bound": 20.73126277143526,
+      "samples_us": [
+        7.903040051460266,
+        7.885839939117432,
+        7.914479970932007
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.485439896583557,
+      "effective_bandwidth_gbps_lower_bound": 29.8681606377718,
+      "samples_us": [
+        5.485439896583557,
+        5.445039868354797,
+        7.170479893684387
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.884960174560547,
+      "effective_bandwidth_gbps_lower_bound": 20.778798671501384,
+      "samples_us": [
+        7.93071985244751,
+        7.859519720077515,
+        7.884960174560547
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.496879816055298,
+      "effective_bandwidth_gbps_lower_bound": 29.80600003686742,
+      "samples_us": [
+        5.03167986869812,
+        6.437839865684509,
+        5.496879816055298
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.407999753952026,
+      "effective_bandwidth_gbps_lower_bound": 30.295859366537503,
+      "samples_us": [
+        5.407999753952026,
+        5.441679954528809,
+        5.35040020942688
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.9467997550964355,
+      "effective_bandwidth_gbps_lower_bound": 23.58496081304212,
+      "samples_us": [
+        5.422080159187317,
+        6.9467997550964355,
+        8.432480096817017
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.25655996799469,
+      "effective_bandwidth_gbps_lower_bound": 19.843615335575723,
+      "samples_us": [
+        8.25655996799469,
+        8.628720045089722,
+        5.186240077018738
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 16,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.047919988632202,
+      "effective_bandwidth_gbps_lower_bound": 27.09030547823998,
+      "samples_us": [
+        7.5758397579193115,
+        6.047919988632202,
+        5.965920090675354
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 83.28984260559082,
+      "effective_bandwidth_gbps_lower_bound": 2.360527932931917,
+      "samples_us": [
+        86.16616249084473,
+        83.28984260559082,
+        81.93408012390137
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 9.933519959449768,
+      "effective_bandwidth_gbps_lower_bound": 19.792379821310636,
+      "samples_us": [
+        10.068080425262451,
+        9.933519959449768,
+        9.92464005947113
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.073119878768921,
+      "effective_bandwidth_gbps_lower_bound": 46.32750548786582,
+      "samples_us": [
+        6.779999732971191,
+        7.683600187301636,
+        7.073119878768921
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.74456000328064,
+      "effective_bandwidth_gbps_lower_bound": 48.58434054120837,
+      "samples_us": [
+        6.774880290031433,
+        6.74456000328064,
+        6.6921597719192505
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.446239948272705,
+      "effective_bandwidth_gbps_lower_bound": 50.83273390836206,
+      "samples_us": [
+        8.004080057144165,
+        6.446239948272705,
+        6.188240051269531
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 82.5545597076416,
+      "effective_bandwidth_gbps_lower_bound": 3.9692538020969974,
+      "samples_us": [
+        82.5545597076416,
+        82.55776405334473,
+        82.26703643798828
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 17.598559856414795,
+      "effective_bandwidth_gbps_lower_bound": 18.6197054005279,
+      "samples_us": [
+        17.873599529266357,
+        17.598559856414795,
+        17.586640119552612
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.974079847335815,
+      "effective_bandwidth_gbps_lower_bound": 41.09314256609554,
+      "samples_us": [
+        7.970719933509827,
+        7.974079847335815,
+        7.9973602294921875
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.960800290107727,
+      "effective_bandwidth_gbps_lower_bound": 47.07504688299695,
+      "samples_us": [
+        7.268800139427185,
+        6.960800290107727,
+        5.915520191192627
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.837280035018921,
+      "effective_bandwidth_gbps_lower_bound": 41.810423837842215,
+      "samples_us": [
+        7.837280035018921,
+        7.780399918556213,
+        8.131840229034424
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.682799816131592,
+      "effective_bandwidth_gbps_lower_bound": 57.66171792112485,
+      "samples_us": [
+        5.735999941825867,
+        5.682799816131592,
+        5.607280135154724
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.947360277175903,
+      "effective_bandwidth_gbps_lower_bound": 41.231300528940054,
+      "samples_us": [
+        7.995280027389526,
+        7.947360277175903,
+        7.871040105819702
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.292479991912842,
+      "effective_bandwidth_gbps_lower_bound": 61.914263351153046,
+      "samples_us": [
+        5.365200042724609,
+        5.212799906730652,
+        5.292479991912842
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.976719856262207,
+      "effective_bandwidth_gbps_lower_bound": 54.82605975862628,
+      "samples_us": [
+        6.389679908752441,
+        5.497279763221741,
+        5.976719856262207
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.368000268936157,
+      "effective_bandwidth_gbps_lower_bound": 61.04321601774815,
+      "samples_us": [
+        5.442000031471252,
+        5.299599766731262,
+        5.368000268936157
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.5877602100372314,
+      "effective_bandwidth_gbps_lower_bound": 58.64245917557308,
+      "samples_us": [
+        5.5877602100372314,
+        5.886480212211609,
+        5.551279783248901
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 32,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.316959857940674,
+      "effective_bandwidth_gbps_lower_bound": 51.87305402742001,
+      "samples_us": [
+        6.303120255470276,
+        6.316959857940674,
+        6.325039863586426
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 81.58608436584473,
+      "effective_bandwidth_gbps_lower_bound": 2.4851296832781973,
+      "samples_us": [
+        81.58608436584473,
+        82.00712203979492,
+        80.9124755859375
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 9.719840288162231,
+      "effective_bandwidth_gbps_lower_bound": 20.859602008783124,
+      "samples_us": [
+        9.719840288162231,
+        10.149919986724854,
+        9.677680134773254
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.9475998878479,
+      "effective_bandwidth_gbps_lower_bound": 42.518496749778386,
+      "samples_us": [
+        7.9475998878479,
+        8.991360068321228,
+        6.544640064239502
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.730560064315796,
+      "effective_bandwidth_gbps_lower_bound": 50.20681737788663,
+      "samples_us": [
+        6.470000147819519,
+        6.730560064315796,
+        7.12943971157074
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.160640120506287,
+      "effective_bandwidth_gbps_lower_bound": 54.851442932886236,
+      "samples_us": [
+        7.338560223579407,
+        6.160640120506287,
+        6.128479838371277
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 81.63583755493164,
+      "effective_bandwidth_gbps_lower_bound": 4.139358523425674,
+      "samples_us": [
+        81.63583755493164,
+        81.76471710205078,
+        81.06247901916504
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 17.155359983444214,
+      "effective_bandwidth_gbps_lower_bound": 19.69763387804802,
+      "samples_us": [
+        17.155359983444214,
+        17.17568039894104,
+        17.11344003677368
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.967360019683838,
+      "effective_bandwidth_gbps_lower_bound": 42.41304511973207,
+      "samples_us": [
+        7.967360019683838,
+        7.966560125350952,
+        8.388879895210266
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.961519718170166,
+      "effective_bandwidth_gbps_lower_bound": 48.541125168115194,
+      "samples_us": [
+        6.961519718170166,
+        8.372799754142761,
+        6.057279706001282
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.078719973564148,
+      "effective_bandwidth_gbps_lower_bound": 41.828408597620616,
+      "samples_us": [
+        7.9521602392196655,
+        8.078719973564148,
+        8.101199865341187
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.491920113563538,
+      "effective_bandwidth_gbps_lower_bound": 61.530392469735716,
+      "samples_us": [
+        5.406240224838257,
+        5.491920113563538,
+        5.659760236740112
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.015919923782349,
+      "effective_bandwidth_gbps_lower_bound": 42.15610974324091,
+      "samples_us": [
+        8.126239776611328,
+        8.015919923782349,
+        7.922959923744202
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.413359999656677,
+      "effective_bandwidth_gbps_lower_bound": 62.423337820028856,
+      "samples_us": [
+        5.205280184745789,
+        5.413359999656677,
+        5.683040022850037
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.676559805870056,
+      "effective_bandwidth_gbps_lower_bound": 59.52901256330663,
+      "samples_us": [
+        5.676559805870056,
+        5.601599812507629,
+        7.0552802085876465
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.669199824333191,
+      "effective_bandwidth_gbps_lower_bound": 59.606295503924315,
+      "samples_us": [
+        5.321599841117859,
+        5.669199824333191,
+        6.050800085067749
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.2478402853012085,
+      "effective_bandwidth_gbps_lower_bound": 64.3922035787727,
+      "samples_us": [
+        5.247439742088318,
+        5.312719941139221,
+        5.2478402853012085
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 33,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.504240036010742,
+      "effective_bandwidth_gbps_lower_bound": 51.95380215507193,
+      "samples_us": [
+        6.504240036010742,
+        6.390399932861328,
+        7.464320063591003
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 82.13607788085938,
+      "effective_bandwidth_gbps_lower_bound": 4.787372493855509,
+      "samples_us": [
+        81.8832015991211,
+        83.85312080383301,
+        82.13607788085938
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 9.886320233345032,
+      "effective_bandwidth_gbps_lower_bound": 39.77374702811499,
+      "samples_us": [
+        9.886320233345032,
+        9.869120121002197,
+        9.95631992816925
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.88040018081665,
+      "effective_bandwidth_gbps_lower_bound": 95.25027364356208,
+      "samples_us": [
+        6.88040018081665,
+        6.8800801038742065,
+        6.907680034637451
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.012479901313782,
+      "effective_bandwidth_gbps_lower_bound": 93.45623933656036,
+      "samples_us": [
+        6.81984007358551,
+        7.291439771652222,
+        7.012479901313782
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.997920036315918,
+      "effective_bandwidth_gbps_lower_bound": 109.26454438071161,
+      "samples_us": [
+        5.932719707489014,
+        5.997920036315918,
+        6.039999723434448
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 82.53199577331543,
+      "effective_bandwidth_gbps_lower_bound": 7.94067796203583,
+      "samples_us": [
+        81.24079704284668,
+        85.94039916992188,
+        82.53199577331543
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 17.43183970451355,
+      "effective_bandwidth_gbps_lower_bound": 37.5955728775036,
+      "samples_us": [
+        17.42751955986023,
+        17.61064052581787,
+        17.43183970451355
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.986639738082886,
+      "effective_bandwidth_gbps_lower_bound": 82.05703793987743,
+      "samples_us": [
+        10.21016001701355,
+        7.789279818534851,
+        7.986639738082886
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.24127984046936,
+      "effective_bandwidth_gbps_lower_bound": 105.00410440668773,
+      "samples_us": [
+        6.24127984046936,
+        6.386240124702454,
+        6.001759767532349
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.66159975528717,
+      "effective_bandwidth_gbps_lower_bound": 75.66269725173557,
+      "samples_us": [
+        8.66159975528717,
+        7.849599719047546,
+        8.839280009269714
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.348400115966797,
+      "effective_bandwidth_gbps_lower_bound": 103.23230861768002,
+      "samples_us": [
+        6.348400115966797,
+        9.74672019481659,
+        6.202639937400818
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.046560287475586,
+      "effective_bandwidth_gbps_lower_bound": 81.44598146117953,
+      "samples_us": [
+        8.046560287475586,
+        7.998960018157959,
+        8.148080110549927
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.829439759254456,
+      "effective_bandwidth_gbps_lower_bound": 112.42246717784352,
+      "samples_us": [
+        5.611039996147156,
+        5.948960185050964,
+        5.829439759254456
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.967919826507568,
+      "effective_bandwidth_gbps_lower_bound": 109.81380766697015,
+      "samples_us": [
+        5.845119953155518,
+        5.967919826507568,
+        6.812719702720642
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.676320195198059,
+      "effective_bandwidth_gbps_lower_bound": 115.45507960498924,
+      "samples_us": [
+        5.732960104942322,
+        5.50104022026062,
+        5.676320195198059
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 5.974640250205994,
+      "effective_bandwidth_gbps_lower_bound": 109.69028636952734,
+      "samples_us": [
+        5.845760107040405,
+        5.974640250205994,
+        6.8906402587890625
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 64,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.31168007850647,
+      "effective_bandwidth_gbps_lower_bound": 103.8328926448182,
+      "samples_us": [
+        6.657360196113586,
+        6.271679997444153,
+        6.31168007850647
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 81.70880317687988,
+      "effective_bandwidth_gbps_lower_bound": 9.624813599307828,
+      "samples_us": [
+        81.70880317687988,
+        81.46648406982422,
+        82.59584426879883
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 10.09719967842102,
+      "effective_bandwidth_gbps_lower_bound": 77.88614913506204,
+      "samples_us": [
+        10.09719967842102,
+        10.149840116500854,
+        9.92576003074646
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.969119906425476,
+      "effective_bandwidth_gbps_lower_bound": 188.07539798411648,
+      "samples_us": [
+        6.910399794578552,
+        7.038319706916809,
+        6.969119906425476
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.917920112609863,
+      "effective_bandwidth_gbps_lower_bound": 189.46735126513568,
+      "samples_us": [
+        6.917920112609863,
+        6.772800087928772,
+        7.417920231819153
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.370800137519836,
+      "effective_bandwidth_gbps_lower_bound": 205.7386782989343,
+      "samples_us": [
+        6.614239811897278,
+        6.370800137519836,
+        5.950160026550293
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 82.77215957641602,
+      "effective_bandwidth_gbps_lower_bound": 15.835276096547068,
+      "samples_us": [
+        82.04936027526855,
+        83.63759994506836,
+        82.77215957641602
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 17.4072003364563,
+      "effective_bandwidth_gbps_lower_bound": 75.29757655830095,
+      "samples_us": [
+        17.328799962997437,
+        17.408640384674072,
+        17.4072003364563
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.02016019821167,
+      "effective_bandwidth_gbps_lower_bound": 163.4281569952011,
+      "samples_us": [
+        8.057760000228882,
+        8.02016019821167,
+        7.937840223312378
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.23143994808197,
+      "effective_bandwidth_gbps_lower_bound": 181.2529744297536,
+      "samples_us": [
+        7.35040009021759,
+        7.23143994808197,
+        6.160320043563843
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.839919924736023,
+      "effective_bandwidth_gbps_lower_bound": 167.18538104764295,
+      "samples_us": [
+        7.839919924736023,
+        8.351519703865051,
+        7.437760233879089
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.14192008972168,
+      "effective_bandwidth_gbps_lower_bound": 213.4055768966208,
+      "samples_us": [
+        6.14192008972168,
+        6.053760051727295,
+        6.286720037460327
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.087599873542786,
+      "effective_bandwidth_gbps_lower_bound": 162.06538657875478,
+      "samples_us": [
+        8.479999899864197,
+        7.9579997062683105,
+        8.087599873542786
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.344640254974365,
+      "effective_bandwidth_gbps_lower_bound": 206.5869690519271,
+      "samples_us": [
+        6.344640254974365,
+        5.976799726486206,
+        7.129039764404297
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.024159789085388,
+      "effective_bandwidth_gbps_lower_bound": 217.5772300022272,
+      "samples_us": [
+        6.024159789085388,
+        5.841919779777527,
+        6.329439878463745
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.094080209732056,
+      "effective_bandwidth_gbps_lower_bound": 215.08085796226004,
+      "samples_us": [
+        6.094080209732056,
+        5.845839977264404,
+        8.072879910469055
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.018319725990295,
+      "effective_bandwidth_gbps_lower_bound": 217.78836281156953,
+      "samples_us": [
+        5.941519737243652,
+        6.481199860572815,
+        6.018319725990295
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 128,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.343200206756592,
+      "effective_bandwidth_gbps_lower_bound": 206.6338689111309,
+      "samples_us": [
+        6.343200206756592,
+        7.4537599086761475,
+        6.308959722518921
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 82.40351676940918,
+      "effective_bandwidth_gbps_lower_bound": 14.315505529952372,
+      "samples_us": [
+        81.42616271972656,
+        84.42992210388184,
+        82.40351676940918
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 10.101840496063232,
+      "effective_bandwidth_gbps_lower_bound": 116.77555198577112,
+      "samples_us": [
+        9.980159997940063,
+        10.12935996055603,
+        10.101840496063232
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.151679992675781,
+      "effective_bandwidth_gbps_lower_bound": 274.911629437211,
+      "samples_us": [
+        7.151679992675781,
+        6.9968801736831665,
+        7.861679792404175
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.223039865493774,
+      "effective_bandwidth_gbps_lower_bound": 272.1956456854744,
+      "samples_us": [
+        7.343360185623169,
+        7.034800052642822,
+        7.223039865493774
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.644480228424072,
+      "effective_bandwidth_gbps_lower_bound": 295.89673419290347,
+      "samples_us": [
+        6.644480228424072,
+        7.3708802461624146,
+        6.468719840049744
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 84.08127784729004,
+      "effective_bandwidth_gbps_lower_bound": 23.383088962691918,
+      "samples_us": [
+        84.08127784729004,
+        82.70928382873535,
+        84.25359725952148
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 18.015520572662354,
+      "effective_bandwidth_gbps_lower_bound": 109.13256667050898,
+      "samples_us": [
+        19.583200216293335,
+        17.547839879989624,
+        18.015520572662354
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.13655972480774,
+      "effective_bandwidth_gbps_lower_bound": 241.63529384606798,
+      "samples_us": [
+        8.537759780883789,
+        8.117920160293579,
+        8.13655972480774
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.868079900741577,
+      "effective_bandwidth_gbps_lower_bound": 286.2634139983889,
+      "samples_us": [
+        7.924399971961975,
+        6.868079900741577,
+        6.694239974021912
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.011760115623474,
+      "effective_bandwidth_gbps_lower_bound": 245.3992595417343,
+      "samples_us": [
+        8.17031979560852,
+        7.920160293579102,
+        8.011760115623474
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.5563201904296875,
+      "effective_bandwidth_gbps_lower_bound": 299.8755312270903,
+      "samples_us": [
+        6.183519959449768,
+        6.5563201904296875,
+        6.580560207366943
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.069199919700623,
+      "effective_bandwidth_gbps_lower_bound": 243.6524091068677,
+      "samples_us": [
+        8.027520179748535,
+        8.069199919700623,
+        8.120399713516235
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.0812002420425415,
+      "effective_bandwidth_gbps_lower_bound": 323.3045980639567,
+      "samples_us": [
+        5.8184802532196045,
+        6.0812002420425415,
+        6.382079720497131
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.021520137786865,
+      "effective_bandwidth_gbps_lower_bound": 280.0077421154694,
+      "samples_us": [
+        7.238479852676392,
+        7.021520137786865,
+        6.549280285835266
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.436640024185181,
+      "effective_bandwidth_gbps_lower_bound": 305.45129020927146,
+      "samples_us": [
+        6.415359973907471,
+        6.436640024185181,
+        8.739439845085144
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.146320104598999,
+      "effective_bandwidth_gbps_lower_bound": 319.8792068328618,
+      "samples_us": [
+        6.146320104598999,
+        6.1240798234939575,
+        6.428160071372986
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 192,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.582000255584717,
+      "effective_bandwidth_gbps_lower_bound": 298.70554902087923,
+      "samples_us": [
+        7.4217599630355835,
+        6.582000255584717,
+        6.351439952850342
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 84.22863960266113,
+      "effective_bandwidth_gbps_lower_bound": 14.07825183445722,
+      "samples_us": [
+        86.96887969970703,
+        84.22863960266113,
+        82.4503231048584
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 10.04855990409851,
+      "effective_bandwidth_gbps_lower_bound": 118.00616320318203,
+      "samples_us": [
+        10.302079916000366,
+        9.964720010757446,
+        10.04855990409851
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.236080169677734,
+      "effective_bandwidth_gbps_lower_bound": 273.12024655028347,
+      "samples_us": [
+        7.093279957771301,
+        7.843199968338013,
+        7.236080169677734
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.9335997104644775,
+      "effective_bandwidth_gbps_lower_bound": 285.0352028567867,
+      "samples_us": [
+        6.9176799058914185,
+        6.9335997104644775,
+        7.5386399030685425
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.714239716529846,
+      "effective_bandwidth_gbps_lower_bound": 294.34754841035544,
+      "samples_us": [
+        7.382320165634155,
+        6.714239716529846,
+        6.043519973754883
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 82.70503997802734,
+      "effective_bandwidth_gbps_lower_bound": 23.896004409465963,
+      "samples_us": [
+        84.11007881164551,
+        82.70503997802734,
+        82.63735771179199
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 17.593519687652588,
+      "effective_bandwidth_gbps_lower_bound": 112.33226978380074,
+      "samples_us": [
+        17.457280158996582,
+        17.593519687652588,
+        17.954959869384766
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.142480254173279,
+      "effective_bandwidth_gbps_lower_bound": 242.71719897473176,
+      "samples_us": [
+        8.142480254173279,
+        8.087360262870789,
+        8.718640208244324
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.624720096588135,
+      "effective_bandwidth_gbps_lower_bound": 298.3250569360425,
+      "samples_us": [
+        6.624720096588135,
+        6.435999870300293,
+        7.24183976650238
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.103920221328735,
+      "effective_bandwidth_gbps_lower_bound": 243.8720947423096,
+      "samples_us": [
+        8.007040023803711,
+        8.366320133209229,
+        8.103920221328735
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.285600066184998,
+      "effective_bandwidth_gbps_lower_bound": 314.42025887585845,
+      "samples_us": [
+        6.933119893074036,
+        6.285600066184998,
+        6.204079985618591
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.24512004852295,
+      "effective_bandwidth_gbps_lower_bound": 239.69572163525294,
+      "samples_us": [
+        8.313599824905396,
+        8.094559907913208,
+        8.24512004852295
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.157600283622742,
+      "effective_bandwidth_gbps_lower_bound": 320.9562019243735,
+      "samples_us": [
+        6.157600283622742,
+        6.006640195846558,
+        7.972400188446045
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.145200133323669,
+      "effective_bandwidth_gbps_lower_bound": 321.6038464366652,
+      "samples_us": [
+        6.299440264701843,
+        6.145200133323669,
+        5.957040190696716
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.553040146827698,
+      "effective_bandwidth_gbps_lower_bound": 301.5882637246972,
+      "samples_us": [
+        5.964080095291138,
+        7.566319704055786,
+        6.553040146827698
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.116080284118652,
+      "effective_bandwidth_gbps_lower_bound": 323.13506497483695,
+      "samples_us": [
+        6.028239727020264,
+        6.116080284118652,
+        6.283439993858337
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 193,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.307839751243591,
+      "effective_bandwidth_gbps_lower_bound": 313.3117006674699,
+      "samples_us": [
+        7.312399744987488,
+        6.307839751243591,
+        6.255679726600647
+      ]
+    },
+    {
+      "implementation": "torch_rms",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 81.71511650085449,
+      "effective_bandwidth_gbps_lower_bound": 19.248139969102933,
+      "samples_us": [
+        81.71511650085449,
+        85.07455825805664,
+        80.30096054077148
+      ]
+    },
+    {
+      "implementation": "torch_native_rms",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 10.016399621963501,
+      "effective_bandwidth_gbps_lower_bound": 157.02887857540114,
+      "samples_us": [
+        10.016399621963501,
+        9.99776005744934,
+        10.028079748153687
+      ]
+    },
+    {
+      "implementation": "cuda_v1_shared",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.089279890060425,
+      "effective_bandwidth_gbps_lower_bound": 369.7752156287987,
+      "samples_us": [
+        7.089279890060425,
+        7.000160217285156,
+        7.971839904785156
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.9384801387786865,
+      "effective_bandwidth_gbps_lower_bound": 377.81184748933026,
+      "samples_us": [
+        6.9384801387786865,
+        6.933199763298035,
+        6.952639818191528
+      ]
+    },
+    {
+      "implementation": "cuda_v2_warp_out",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.268240213394165,
+      "effective_bandwidth_gbps_lower_bound": 418.20988200139936,
+      "samples_us": [
+        6.268240213394165,
+        7.169039845466614,
+        6.072160005569458
+      ]
+    },
+    {
+      "implementation": "torch_fused_reference",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 82.08127975463867,
+      "effective_bandwidth_gbps_lower_bound": 31.937123883011267,
+      "samples_us": [
+        82.08127975463867,
+        83.9523983001709,
+        81.9204044342041
+      ]
+    },
+    {
+      "implementation": "torch_native_fused",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 18.247439861297607,
+      "effective_bandwidth_gbps_lower_bound": 143.66070089426697,
+      "samples_us": [
+        18.42568039894104,
+        17.609599828720093,
+        18.247439861297607
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.176959753036499,
+      "effective_bandwidth_gbps_lower_bound": 320.5885902797226,
+      "samples_us": [
+        8.038079738616943,
+        8.237919807434082,
+        8.176959753036499
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v2_out",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.140720129013062,
+      "effective_bandwidth_gbps_lower_bound": 322.0157379759731,
+      "samples_us": [
+        8.953120112419128,
+        8.140720129013062,
+        7.927839756011963
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 8.429200053215027,
+      "effective_bandwidth_gbps_lower_bound": 310.9951102655515,
+      "samples_us": [
+        7.824079990386963,
+        8.8372802734375,
+        8.429200053215027
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_h1024_out",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.375359892845154,
+      "effective_bandwidth_gbps_lower_bound": 411.18306167185193,
+      "samples_us": [
+        6.704639792442322,
+        6.375359892845154,
+        6.25823974609375
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 7.936720252037048,
+      "effective_bandwidth_gbps_lower_bound": 330.29260409262605,
+      "samples_us": [
+        8.394320011138916,
+        7.85040020942688,
+        7.936720252037048
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_packed_out",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.165599822998047,
+      "effective_bandwidth_gbps_lower_bound": 425.1719338355169,
+      "samples_us": [
+        6.161440014839172,
+        6.165599822998047,
+        7.200800180435181
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v3_inplace",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.472799777984619,
+      "effective_bandwidth_gbps_lower_bound": 404.9932162147329,
+      "samples_us": [
+        7.780799865722656,
+        6.472799777984619,
+        6.367279887199402
+      ]
+    },
+    {
+      "implementation": "cuda_fused_v4_inplace",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.844639778137207,
+      "effective_bandwidth_gbps_lower_bound": 382.9916671982166,
+      "samples_us": [
+        6.112480163574219,
+        8.263360261917114,
+        6.844639778137207
+      ]
+    },
+    {
+      "implementation": "cuda_fused_auto_inplace",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.242960095405579,
+      "effective_bandwidth_gbps_lower_bound": 419.903372749285,
+      "samples_us": [
+        6.242960095405579,
+        6.3119202852249146,
+        6.225759983062744
+      ]
+    },
+    {
+      "implementation": "flashinfer_fused_inplace",
+      "tokens": 256,
+      "hidden": 1024,
+      "dtype": "bfloat16",
+      "latency_us": 6.5595197677612305,
+      "effective_bandwidth_gbps_lower_bound": 399.63901212461775,
+      "samples_us": [
+        7.587519884109497,
+        6.5595197677612305,
+        6.2993597984313965
+      ]
+    }
+  ]
+}
