@@ -20,7 +20,7 @@ RMSNorm + RoPE + Paged KV Store 融合。
 | FlashInfer 0.6.6 公平对比 | 相同原地语义下，FP16 延迟降低 2.9–13.2%，BF16 降低 1.9–13.2% |
 | Q/K Norm+RoPE 微基准 | 相对等价 `torch.compile` 链路快 4.9–8.1× |
 | nano-vLLM 端到端 | batch=1 Decode +1.77% / +2.31%，输出吞吐 +1.24% / +1.72% |
-| 工程验证 | 180 项 GPU 测试；memcheck 0 errors；racecheck 0 hazards |
+| 工程验证 | 最终提交全量 GPU suite：180 passed；代表性 memcheck/racecheck：0 errors / 0 hazards |
 
 最新形状图把算子微基准和引擎 A/B 分开呈现，并给出 PyTorch reference 的输出分配限制。不要把单算子比例当成端到端加速。
 
@@ -164,3 +164,10 @@ python -m benchmarks.profile_qk_norm_rope \
 本仓库证明的是一套完整的 CUDA 性能工程流程，而不是“自定义 Kernel 必然
 优于 PyTorch、FlashInfer 或 vLLM”。独立算子收益必须经过真实推理引擎 A/B
 验证；无法稳定获益的 Shape 应保留框架实现。
+
+
+## Final commit validation — 2026-10-10
+
+On the clean `d990cca2af201203ac810cb0c63c13049dabdd1c` commit, the full GPU suite completed with **180 passed** on RTX 5060 SM120. The extension was rebuilt from this checkout with CUDA Toolkit/NVCC 13.3 and `TORCH_CUDA_ARCH_LIST=12.0`, then installed into the test environment (PyTorch 2.14.1+cu130, CUDA Runtime 13.0).
+
+Focused sanitizer coverage exercised fused RMSNorm, Q/K Norm + RoPE, and Q/K Norm + RoPE + KV store: **3 tests passed under memcheck (0 errors)** and **3 tests passed under racecheck (0 hazards)**. These are representative sanitizer cases, not a full 180-test sanitizer matrix.
