@@ -1,0 +1,759 @@
+{
+  "gpu": "NVIDIA GeForce RTX 5060",
+  "compute_capability": [
+    12,
+    0
+  ],
+  "torch": "2.14.1+cu130",
+  "cuda": "13.0",
+  "independent_processes_per_dtype": 5,
+  "warmup_per_sample": 50,
+  "iterations_per_sample": 200,
+  "within_process_samples": 3,
+  "results": {
+    "float16": [
+      {
+        "tokens": 1,
+        "hidden": 768,
+        "torch_native_fused_median_us": 17.894400358200073,
+        "cuda_fused_v2_out_median_us": 6.5300798416137695,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.5300798416137695,
+        "selected_speedup_vs_torch_native_median_within_process": 2.757326478009354,
+        "selected_process_latency_range_us": [
+          6.461120247840881,
+          6.578720211982727
+        ]
+      },
+      {
+        "tokens": 1,
+        "hidden": 1024,
+        "torch_native_fused_median_us": 17.690240144729614,
+        "cuda_fused_v2_out_median_us": 6.43280029296875,
+        "selected_variant": "cuda_fused_v4_packed_out",
+        "selected_median_us": 5.274080038070679,
+        "selected_speedup_vs_torch_native_median_within_process": 3.2803300737891,
+        "selected_process_latency_range_us": [
+          5.2188801765441895,
+          6.019359827041626
+        ],
+        "cuda_fused_v3_out_median_us": 5.746399760246277,
+        "cuda_fused_v4_out_median_us": 5.274080038070679,
+        "v4_speedup_vs_v3_median_paired": 1.074710191767554,
+        "measured_implementations": [
+          "cuda_fused_auto_inplace",
+          "cuda_fused_v2",
+          "cuda_fused_v2_out",
+          "cuda_fused_v3_h1024",
+          "cuda_fused_v3_h1024_out",
+          "cuda_fused_v3_inplace",
+          "cuda_fused_v4_inplace",
+          "cuda_fused_v4_packed",
+          "cuda_fused_v4_packed_out",
+          "cuda_v1_shared",
+          "cuda_v2_warp",
+          "cuda_v2_warp_out",
+          "flashinfer_fused_inplace",
+          "torch_fused_reference",
+          "torch_native_fused",
+          "torch_native_rms",
+          "torch_rms"
+        ]
+      },
+      {
+        "tokens": 1,
+        "hidden": 2048,
+        "torch_native_fused_median_us": 17.5107204914093,
+        "cuda_fused_v2_out_median_us": 6.445440053939819,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.445440053939819,
+        "selected_speedup_vs_torch_native_median_within_process": 2.6948792868688263,
+        "selected_process_latency_range_us": [
+          6.29584014415741,
+          6.939679980278015
+        ]
+      },
+      {
+        "tokens": 1,
+        "hidden": 4096,
+        "torch_native_fused_median_us": 17.57024049758911,
+        "cuda_fused_v2_out_median_us": 8.2123202085495,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 8.2123202085495,
+        "selected_speedup_vs_torch_native_median_within_process": 2.1384949013300822,
+        "selected_process_latency_range_us": [
+          8.045120239257812,
+          9.801920056343079
+        ]
+      },
+      {
+        "tokens": 4,
+        "hidden": 768,
+        "torch_native_fused_median_us": 18.07088017463684,
+        "cuda_fused_v2_out_median_us": 6.363199949264526,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.363199949264526,
+        "selected_speedup_vs_torch_native_median_within_process": 2.7890617660686403,
+        "selected_process_latency_range_us": [
+          6.260480284690857,
+          7.719519734382629
+        ]
+      },
+      {
+        "tokens": 4,
+        "hidden": 1024,
+        "torch_native_fused_median_us": 17.69968032836914,
+        "cuda_fused_v2_out_median_us": 6.330080032348633,
+        "selected_variant": "cuda_fused_v4_packed_out",
+        "selected_median_us": 5.3094398975372314,
+        "selected_speedup_vs_torch_native_median_within_process": 3.3737645886811976,
+        "selected_process_latency_range_us": [
+          5.124959945678711,
+          6.22111976146698
+        ],
+        "cuda_fused_v3_out_median_us": 5.909759998321533,
+        "cuda_fused_v4_out_median_us": 5.3094398975372314,
+        "v4_speedup_vs_v3_median_paired": 1.1531329143956635,
+        "measured_implementations": [
+          "cuda_fused_auto_inplace",
+          "cuda_fused_v2",
+          "cuda_fused_v2_out",
+          "cuda_fused_v3_h1024",
+          "cuda_fused_v3_h1024_out",
+          "cuda_fused_v3_inplace",
+          "cuda_fused_v4_inplace",
+          "cuda_fused_v4_packed",
+          "cuda_fused_v4_packed_out",
+          "cuda_v1_shared",
+          "cuda_v2_warp",
+          "cuda_v2_warp_out",
+          "flashinfer_fused_inplace",
+          "torch_fused_reference",
+          "torch_native_fused",
+          "torch_native_rms",
+          "torch_rms"
+        ]
+      },
+      {
+        "tokens": 4,
+        "hidden": 2048,
+        "torch_native_fused_median_us": 17.728480100631714,
+        "cuda_fused_v2_out_median_us": 6.331999897956848,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.331999897956848,
+        "selected_speedup_vs_torch_native_median_within_process": 2.783590919509502,
+        "selected_process_latency_range_us": [
+          6.241919994354248,
+          6.460480093955994
+        ]
+      },
+      {
+        "tokens": 4,
+        "hidden": 4096,
+        "torch_native_fused_median_us": 17.5217604637146,
+        "cuda_fused_v2_out_median_us": 8.13696026802063,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 8.13696026802063,
+        "selected_speedup_vs_torch_native_median_within_process": 2.132294975355919,
+        "selected_process_latency_range_us": [
+          7.912319898605347,
+          8.857120275497437
+        ]
+      },
+      {
+        "tokens": 16,
+        "hidden": 768,
+        "torch_native_fused_median_us": 17.648639678955078,
+        "cuda_fused_v2_out_median_us": 6.411839723587036,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.411839723587036,
+        "selected_speedup_vs_torch_native_median_within_process": 2.819533967781081,
+        "selected_process_latency_range_us": [
+          6.005759835243225,
+          6.786400079727173
+        ]
+      },
+      {
+        "tokens": 16,
+        "hidden": 1024,
+        "torch_native_fused_median_us": 17.655199766159058,
+        "cuda_fused_v2_out_median_us": 6.265280246734619,
+        "selected_variant": "cuda_fused_v4_packed_out",
+        "selected_median_us": 5.437600016593933,
+        "selected_speedup_vs_torch_native_median_within_process": 3.310048615668537,
+        "selected_process_latency_range_us": [
+          5.12112021446228,
+          7.094560265541077
+        ],
+        "cuda_fused_v3_out_median_us": 5.54207980632782,
+        "cuda_fused_v4_out_median_us": 5.437600016593933,
+        "v4_speedup_vs_v3_median_paired": 1.0431610533829618,
+        "measured_implementations": [
+          "cuda_fused_auto_inplace",
+          "cuda_fused_v2",
+          "cuda_fused_v2_out",
+          "cuda_fused_v3_h1024",
+          "cuda_fused_v3_h1024_out",
+          "cuda_fused_v3_inplace",
+          "cuda_fused_v4_inplace",
+          "cuda_fused_v4_packed",
+          "cuda_fused_v4_packed_out",
+          "cuda_v1_shared",
+          "cuda_v2_warp",
+          "cuda_v2_warp_out",
+          "flashinfer_fused_inplace",
+          "torch_fused_reference",
+          "torch_native_fused",
+          "torch_native_rms",
+          "torch_rms"
+        ]
+      },
+      {
+        "tokens": 16,
+        "hidden": 2048,
+        "torch_native_fused_median_us": 17.679680585861206,
+        "cuda_fused_v2_out_median_us": 6.6975998878479,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.6975998878479,
+        "selected_speedup_vs_torch_native_median_within_process": 2.606999487750327,
+        "selected_process_latency_range_us": [
+          6.29423975944519,
+          8.990560173988342
+        ]
+      },
+      {
+        "tokens": 16,
+        "hidden": 4096,
+        "torch_native_fused_median_us": 17.794400453567505,
+        "cuda_fused_v2_out_median_us": 8.00000011920929,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 8.00000011920929,
+        "selected_speedup_vs_torch_native_median_within_process": 2.2156999675080185,
+        "selected_process_latency_range_us": [
+          7.883039712905884,
+          8.353599905967712
+        ]
+      },
+      {
+        "tokens": 64,
+        "hidden": 768,
+        "torch_native_fused_median_us": 17.84127950668335,
+        "cuda_fused_v2_out_median_us": 6.4156800508499146,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.4156800508499146,
+        "selected_speedup_vs_torch_native_median_within_process": 2.8439387573650228,
+        "selected_process_latency_range_us": [
+          6.185920238494873,
+          6.588960289955139
+        ]
+      },
+      {
+        "tokens": 64,
+        "hidden": 1024,
+        "torch_native_fused_median_us": 18.033599853515625,
+        "cuda_fused_v2_out_median_us": 6.5940797328948975,
+        "selected_variant": "cuda_fused_v4_packed_out",
+        "selected_median_us": 5.960479974746704,
+        "selected_speedup_vs_torch_native_median_within_process": 3.017475154564598,
+        "selected_process_latency_range_us": [
+          5.878559947013855,
+          6.079679727554321
+        ],
+        "cuda_fused_v3_out_median_us": 6.531519889831543,
+        "cuda_fused_v4_out_median_us": 5.960479974746704,
+        "v4_speedup_vs_v3_median_paired": 1.081119755671303,
+        "measured_implementations": [
+          "cuda_fused_auto_inplace",
+          "cuda_fused_v2",
+          "cuda_fused_v2_out",
+          "cuda_fused_v3_h1024",
+          "cuda_fused_v3_h1024_out",
+          "cuda_fused_v3_inplace",
+          "cuda_fused_v4_inplace",
+          "cuda_fused_v4_packed",
+          "cuda_fused_v4_packed_out",
+          "cuda_v1_shared",
+          "cuda_v2_warp",
+          "cuda_v2_warp_out",
+          "flashinfer_fused_inplace",
+          "torch_fused_reference",
+          "torch_native_fused",
+          "torch_native_rms",
+          "torch_rms"
+        ]
+      },
+      {
+        "tokens": 64,
+        "hidden": 2048,
+        "torch_native_fused_median_us": 17.66752004623413,
+        "cuda_fused_v2_out_median_us": 6.5513598918914795,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.5513598918914795,
+        "selected_speedup_vs_torch_native_median_within_process": 2.696771408956018,
+        "selected_process_latency_range_us": [
+          6.340640187263489,
+          6.975679993629456
+        ]
+      },
+      {
+        "tokens": 64,
+        "hidden": 4096,
+        "torch_native_fused_median_us": 17.849279642105103,
+        "cuda_fused_v2_out_median_us": 8.693600296974182,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 8.693600296974182,
+        "selected_speedup_vs_torch_native_median_within_process": 2.1680692041742944,
+        "selected_process_latency_range_us": [
+          8.183519840240479,
+          9.106240272521973
+        ]
+      },
+      {
+        "tokens": 256,
+        "hidden": 768,
+        "torch_native_fused_median_us": 17.896000146865845,
+        "cuda_fused_v2_out_median_us": 7.544000148773193,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 7.544000148773193,
+        "selected_speedup_vs_torch_native_median_within_process": 2.390676160245872,
+        "selected_process_latency_range_us": [
+          7.290719747543335,
+          7.658720016479492
+        ]
+      },
+      {
+        "tokens": 256,
+        "hidden": 1024,
+        "torch_native_fused_median_us": 18.122880458831787,
+        "cuda_fused_v2_out_median_us": 7.983199954032898,
+        "selected_variant": "cuda_fused_v4_packed_out",
+        "selected_median_us": 6.350719928741455,
+        "selected_speedup_vs_torch_native_median_within_process": 2.786893098575361,
+        "selected_process_latency_range_us": [
+          6.280800104141235,
+          6.781759858131409
+        ],
+        "cuda_fused_v3_out_median_us": 6.4820802211761475,
+        "cuda_fused_v4_out_median_us": 6.350719928741455,
+        "v4_speedup_vs_v3_median_paired": 1.017195267842247,
+        "measured_implementations": [
+          "cuda_fused_auto_inplace",
+          "cuda_fused_v2",
+          "cuda_fused_v2_out",
+          "cuda_fused_v3_h1024",
+          "cuda_fused_v3_h1024_out",
+          "cuda_fused_v3_inplace",
+          "cuda_fused_v4_inplace",
+          "cuda_fused_v4_packed",
+          "cuda_fused_v4_packed_out",
+          "cuda_v1_shared",
+          "cuda_v2_warp",
+          "cuda_v2_warp_out",
+          "flashinfer_fused_inplace",
+          "torch_fused_reference",
+          "torch_native_fused",
+          "torch_native_rms",
+          "torch_rms"
+        ]
+      },
+      {
+        "tokens": 256,
+        "hidden": 2048,
+        "torch_native_fused_median_us": 17.743040323257446,
+        "cuda_fused_v2_out_median_us": 8.3297598361969,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 8.3297598361969,
+        "selected_speedup_vs_torch_native_median_within_process": 2.1329787195980714,
+        "selected_process_latency_range_us": [
+          8.207359910011292,
+          8.591039776802063
+        ]
+      },
+      {
+        "tokens": 256,
+        "hidden": 4096,
+        "torch_native_fused_median_us": 18.583680391311646,
+        "cuda_fused_v2_out_median_us": 14.135359525680542,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 14.135359525680542,
+        "selected_speedup_vs_torch_native_median_within_process": 1.331010834646347,
+        "selected_process_latency_range_us": [
+          13.962080478668213,
+          14.710719585418701
+        ]
+      }
+    ],
+    "bfloat16": [
+      {
+        "tokens": 1,
+        "hidden": 768,
+        "torch_native_fused_median_us": 17.32192039489746,
+        "cuda_fused_v2_out_median_us": 6.455039978027344,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.455039978027344,
+        "selected_speedup_vs_torch_native_median_within_process": 2.667060097867996,
+        "selected_process_latency_range_us": [
+          6.2433600425720215,
+          6.555359959602356
+        ]
+      },
+      {
+        "tokens": 1,
+        "hidden": 1024,
+        "torch_native_fused_median_us": 17.512799501419067,
+        "cuda_fused_v2_out_median_us": 6.39087975025177,
+        "selected_variant": "cuda_fused_v4_packed_out",
+        "selected_median_us": 5.984159708023071,
+        "selected_speedup_vs_torch_native_median_within_process": 2.913344689521277,
+        "selected_process_latency_range_us": [
+          5.269119739532471,
+          8.091840147972107
+        ],
+        "cuda_fused_v3_out_median_us": 5.953119993209839,
+        "cuda_fused_v4_out_median_us": 5.984159708023071,
+        "v4_speedup_vs_v3_median_paired": 1.0922354081590473,
+        "measured_implementations": [
+          "cuda_fused_auto_inplace",
+          "cuda_fused_v2",
+          "cuda_fused_v2_out",
+          "cuda_fused_v3_h1024",
+          "cuda_fused_v3_h1024_out",
+          "cuda_fused_v3_inplace",
+          "cuda_fused_v4_inplace",
+          "cuda_fused_v4_packed",
+          "cuda_fused_v4_packed_out",
+          "cuda_v1_shared",
+          "cuda_v2_warp",
+          "cuda_v2_warp_out",
+          "flashinfer_fused_inplace",
+          "torch_fused_reference",
+          "torch_native_fused",
+          "torch_native_rms",
+          "torch_rms"
+        ]
+      },
+      {
+        "tokens": 1,
+        "hidden": 2048,
+        "torch_native_fused_median_us": 17.76528000831604,
+        "cuda_fused_v2_out_median_us": 6.484320163726807,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.484320163726807,
+        "selected_speedup_vs_torch_native_median_within_process": 2.7397290016145037,
+        "selected_process_latency_range_us": [
+          6.280800104141235,
+          7.077599763870239
+        ]
+      },
+      {
+        "tokens": 1,
+        "hidden": 4096,
+        "torch_native_fused_median_us": 17.59552001953125,
+        "cuda_fused_v2_out_median_us": 8.152160048484802,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 8.152160048484802,
+        "selected_speedup_vs_torch_native_median_within_process": 2.1687503632909277,
+        "selected_process_latency_range_us": [
+          7.958880066871643,
+          10.066239833831787
+        ]
+      },
+      {
+        "tokens": 4,
+        "hidden": 768,
+        "torch_native_fused_median_us": 17.61023998260498,
+        "cuda_fused_v2_out_median_us": 6.252800226211548,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.252800226211548,
+        "selected_speedup_vs_torch_native_median_within_process": 2.871382239711321,
+        "selected_process_latency_range_us": [
+          6.064640283584595,
+          6.505280137062073
+        ]
+      },
+      {
+        "tokens": 4,
+        "hidden": 1024,
+        "torch_native_fused_median_us": 17.480640411376953,
+        "cuda_fused_v2_out_median_us": 6.201760172843933,
+        "selected_variant": "cuda_fused_v4_packed_out",
+        "selected_median_us": 5.66864013671875,
+        "selected_speedup_vs_torch_native_median_within_process": 3.124163652422611,
+        "selected_process_latency_range_us": [
+          5.281919836997986,
+          5.951359868049622
+        ],
+        "cuda_fused_v3_out_median_us": 5.422080159187317,
+        "cuda_fused_v4_out_median_us": 5.66864013671875,
+        "v4_speedup_vs_v3_median_paired": 0.9822024141876716,
+        "measured_implementations": [
+          "cuda_fused_auto_inplace",
+          "cuda_fused_v2",
+          "cuda_fused_v2_out",
+          "cuda_fused_v3_h1024",
+          "cuda_fused_v3_h1024_out",
+          "cuda_fused_v3_inplace",
+          "cuda_fused_v4_inplace",
+          "cuda_fused_v4_packed",
+          "cuda_fused_v4_packed_out",
+          "cuda_v1_shared",
+          "cuda_v2_warp",
+          "cuda_v2_warp_out",
+          "flashinfer_fused_inplace",
+          "torch_fused_reference",
+          "torch_native_fused",
+          "torch_native_rms",
+          "torch_rms"
+        ]
+      },
+      {
+        "tokens": 4,
+        "hidden": 2048,
+        "torch_native_fused_median_us": 17.515360116958618,
+        "cuda_fused_v2_out_median_us": 6.823359727859497,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.823359727859497,
+        "selected_speedup_vs_torch_native_median_within_process": 2.5669700580850403,
+        "selected_process_latency_range_us": [
+          6.436480283737183,
+          8.008639812469482
+        ]
+      },
+      {
+        "tokens": 4,
+        "hidden": 4096,
+        "torch_native_fused_median_us": 18.161120414733887,
+        "cuda_fused_v2_out_median_us": 8.304479718208313,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 8.304479718208313,
+        "selected_speedup_vs_torch_native_median_within_process": 2.0950683791570746,
+        "selected_process_latency_range_us": [
+          7.771520018577576,
+          9.458400011062622
+        ]
+      },
+      {
+        "tokens": 16,
+        "hidden": 768,
+        "torch_native_fused_median_us": 17.42400050163269,
+        "cuda_fused_v2_out_median_us": 6.424160003662109,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.424160003662109,
+        "selected_speedup_vs_torch_native_median_within_process": 2.73718681707438,
+        "selected_process_latency_range_us": [
+          5.419359803199768,
+          6.621599793434143
+        ]
+      },
+      {
+        "tokens": 16,
+        "hidden": 1024,
+        "torch_native_fused_median_us": 17.5108802318573,
+        "cuda_fused_v2_out_median_us": 6.324319839477539,
+        "selected_variant": "cuda_fused_v4_packed_out",
+        "selected_median_us": 5.254240036010742,
+        "selected_speedup_vs_torch_native_median_within_process": 3.3327141721436,
+        "selected_process_latency_range_us": [
+          5.193600058555603,
+          6.153920292854309
+        ],
+        "cuda_fused_v3_out_median_us": 5.653120279312134,
+        "cuda_fused_v4_out_median_us": 5.254240036010742,
+        "v4_speedup_vs_v3_median_paired": 1.05898150995148,
+        "measured_implementations": [
+          "cuda_fused_auto_inplace",
+          "cuda_fused_v2",
+          "cuda_fused_v2_out",
+          "cuda_fused_v3_h1024",
+          "cuda_fused_v3_h1024_out",
+          "cuda_fused_v3_inplace",
+          "cuda_fused_v4_inplace",
+          "cuda_fused_v4_packed",
+          "cuda_fused_v4_packed_out",
+          "cuda_v1_shared",
+          "cuda_v2_warp",
+          "cuda_v2_warp_out",
+          "flashinfer_fused_inplace",
+          "torch_fused_reference",
+          "torch_native_fused",
+          "torch_native_rms",
+          "torch_rms"
+        ]
+      },
+      {
+        "tokens": 16,
+        "hidden": 2048,
+        "torch_native_fused_median_us": 17.559200525283813,
+        "cuda_fused_v2_out_median_us": 6.500639915466309,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.500639915466309,
+        "selected_speedup_vs_torch_native_median_within_process": 2.683358468662606,
+        "selected_process_latency_range_us": [
+          6.417919993400574,
+          6.6361600160598755
+        ]
+      },
+      {
+        "tokens": 16,
+        "hidden": 4096,
+        "torch_native_fused_median_us": 17.675360441207886,
+        "cuda_fused_v2_out_median_us": 8.205599784851074,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 8.205599784851074,
+        "selected_speedup_vs_torch_native_median_within_process": 2.137183217902668,
+        "selected_process_latency_range_us": [
+          7.8195202350616455,
+          10.110559463500977
+        ]
+      },
+      {
+        "tokens": 64,
+        "hidden": 768,
+        "torch_native_fused_median_us": 17.808799743652344,
+        "cuda_fused_v2_out_median_us": 6.397600173950195,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.397600173950195,
+        "selected_speedup_vs_torch_native_median_within_process": 2.826162636108355,
+        "selected_process_latency_range_us": [
+          6.22111976146698,
+          6.56112015247345
+        ]
+      },
+      {
+        "tokens": 64,
+        "hidden": 1024,
+        "torch_native_fused_median_us": 17.678240537643433,
+        "cuda_fused_v2_out_median_us": 6.395519971847534,
+        "selected_variant": "cuda_fused_v4_packed_out",
+        "selected_median_us": 5.896959900856018,
+        "selected_speedup_vs_torch_native_median_within_process": 2.988414464226205,
+        "selected_process_latency_range_us": [
+          5.682399868965149,
+          6.103039979934692
+        ],
+        "cuda_fused_v3_out_median_us": 6.372960209846497,
+        "cuda_fused_v4_out_median_us": 5.896959900856018,
+        "v4_speedup_vs_v3_median_paired": 1.0766718571435314,
+        "measured_implementations": [
+          "cuda_fused_auto_inplace",
+          "cuda_fused_v2",
+          "cuda_fused_v2_out",
+          "cuda_fused_v3_h1024",
+          "cuda_fused_v3_h1024_out",
+          "cuda_fused_v3_inplace",
+          "cuda_fused_v4_inplace",
+          "cuda_fused_v4_packed",
+          "cuda_fused_v4_packed_out",
+          "cuda_v1_shared",
+          "cuda_v2_warp",
+          "cuda_v2_warp_out",
+          "flashinfer_fused_inplace",
+          "torch_fused_reference",
+          "torch_native_fused",
+          "torch_native_rms",
+          "torch_rms"
+        ]
+      },
+      {
+        "tokens": 64,
+        "hidden": 2048,
+        "torch_native_fused_median_us": 17.67791986465454,
+        "cuda_fused_v2_out_median_us": 6.37391984462738,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 6.37391984462738,
+        "selected_speedup_vs_torch_native_median_within_process": 2.7911948010392917,
+        "selected_process_latency_range_us": [
+          6.200479865074158,
+          7.035999894142151
+        ]
+      },
+      {
+        "tokens": 64,
+        "hidden": 4096,
+        "torch_native_fused_median_us": 17.52303957939148,
+        "cuda_fused_v2_out_median_us": 8.26304018497467,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 8.26304018497467,
+        "selected_speedup_vs_torch_native_median_within_process": 2.123908264443162,
+        "selected_process_latency_range_us": [
+          8.181759715080261,
+          9.914399981498718
+        ]
+      },
+      {
+        "tokens": 256,
+        "hidden": 768,
+        "torch_native_fused_median_us": 17.821600437164307,
+        "cuda_fused_v2_out_median_us": 7.9817599058151245,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 7.9817599058151245,
+        "selected_speedup_vs_torch_native_median_within_process": 2.228561191549268,
+        "selected_process_latency_range_us": [
+          7.59663999080658,
+          8.32319974899292
+        ]
+      },
+      {
+        "tokens": 256,
+        "hidden": 1024,
+        "torch_native_fused_median_us": 17.744799852371216,
+        "cuda_fused_v2_out_median_us": 7.724959850311279,
+        "selected_variant": "cuda_fused_v4_packed_out",
+        "selected_median_us": 6.395840048789978,
+        "selected_speedup_vs_torch_native_median_within_process": 2.7924650613083024,
+        "selected_process_latency_range_us": [
+          6.151999831199646,
+          6.77232027053833
+        ],
+        "cuda_fused_v3_out_median_us": 6.783519983291626,
+        "cuda_fused_v4_out_median_us": 6.395840048789978,
+        "v4_speedup_vs_v3_median_paired": 1.0857477558879691,
+        "measured_implementations": [
+          "cuda_fused_auto_inplace",
+          "cuda_fused_v2",
+          "cuda_fused_v2_out",
+          "cuda_fused_v3_h1024",
+          "cuda_fused_v3_h1024_out",
+          "cuda_fused_v3_inplace",
+          "cuda_fused_v4_inplace",
+          "cuda_fused_v4_packed",
+          "cuda_fused_v4_packed_out",
+          "cuda_v1_shared",
+          "cuda_v2_warp",
+          "cuda_v2_warp_out",
+          "flashinfer_fused_inplace",
+          "torch_fused_reference",
+          "torch_native_fused",
+          "torch_native_rms",
+          "torch_rms"
+        ]
+      },
+      {
+        "tokens": 256,
+        "hidden": 2048,
+        "torch_native_fused_median_us": 17.722400426864624,
+        "cuda_fused_v2_out_median_us": 8.215680122375488,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 8.215680122375488,
+        "selected_speedup_vs_torch_native_median_within_process": 2.15781581236648,
+        "selected_process_latency_range_us": [
+          8.210240006446838,
+          8.312479853630066
+        ]
+      },
+      {
+        "tokens": 256,
+        "hidden": 4096,
+        "torch_native_fused_median_us": 17.71567940711975,
+        "cuda_fused_v2_out_median_us": 14.11679983139038,
+        "selected_variant": "cuda_fused_v2_out",
+        "selected_median_us": 14.11679983139038,
+        "selected_speedup_vs_torch_native_median_within_process": 1.258702147621368,
+        "selected_process_latency_range_us": [
+          14.002560377120972,
+          14.663039445877075
+        ]
+      }
+    ]
+  }
+}

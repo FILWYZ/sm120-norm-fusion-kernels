@@ -16,10 +16,13 @@ RMSNorm + RoPE + Paged KV Store 融合。
 | 方向 | 结果 |
 |---|---|
 | PyTorch Native 基线 | FP16/BF16 `hidden_size=1024` 下，预分配 RMSNorm 快 2.65–3.40× |
+| 形状覆盖 | FP16/BF16、tokens `{1,4,16,64,256}`、hidden `{768,1024,2048,4096}`；五进程微基准汇总见 [RTX5060_SHAPE_MAP_20261010.md](docs/RTX5060_SHAPE_MAP_20261010.md) |
 | FlashInfer 0.6.6 公平对比 | 相同原地语义下，FP16 延迟降低 2.9–13.2%，BF16 降低 1.9–13.2% |
 | Q/K Norm+RoPE 微基准 | 相对等价 `torch.compile` 链路快 4.9–8.1× |
 | nano-vLLM 端到端 | batch=1 Decode +1.77% / +2.31%，输出吞吐 +1.24% / +1.72% |
 | 工程验证 | 180 项 GPU 测试；memcheck 0 errors；racecheck 0 hazards |
+
+最新形状图把算子微基准和引擎 A/B 分开呈现，并给出 PyTorch reference 的输出分配限制。不要把单算子比例当成端到端加速。
 
 所有性能结论只适用于文档记录的 GPU、dtype、Shape、软件版本和测试协议。
 
@@ -74,6 +77,10 @@ input = RMSNorm(residual) * weight
   不包含 Block Barrier。
 - NCU 显示 V4 虽提高显存吞吐但增加寄存器使用，说明向量化、Occupancy
   和 Shape 之间需要实测权衡。
+- RTX 5060 上新补的 NCU profile 显示 V4 寄存器数更高、活跃 warp 比例更低，
+  但没有 local spill；four-warps Q/K 消融虽然达到 100% 理论 Occupancy，
+  仍未带来稳定端到端收益。完整指标、形状 dispatch 表和失败实验见
+  [RTX5060 shape map](docs/RTX5060_SHAPE_MAP_20261010.md)。
 
 ```bash
 bash scripts/check_sass.sh
@@ -84,6 +91,10 @@ bash scripts/profile_ncu.sh
 
 要求：WSL 可见 NVIDIA 驱动，安装与 PyTorch 版本匹配的 CUDA Toolkit、
 NVCC、Ninja 和 C++ 编译器。
+
+本机 2026-10-10 形状矩阵的环境是 PyTorch 2.14.1+cu130、CUDA Runtime
+13.0、NVCC 13.3、RTX 5060 SM120。仓库中 CUDA 12.8 命令是历史构建示例，
+不能当作该组最新数据的编译环境。
 
 ```bash
 python -m pip install -U pip ninja pytest
