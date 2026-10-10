@@ -16,10 +16,13 @@ RMSNorm + RoPE + Paged KV Store 融合。
 | 方向 | 结果 |
 |---|---|
 | PyTorch Native 基线 | FP16/BF16 `hidden_size=1024` 下，预分配 RMSNorm 快 2.65–3.40× |
+| 形状覆盖 | FP16/BF16、tokens `{1,4,16,64,256}`、hidden `{768,1024,2048,4096}`；五进程微基准汇总见 [RTX5060_SHAPE_MAP_20261010.md](docs/RTX5060_SHAPE_MAP_20261010.md) |
 | FlashInfer 0.6.6 公平对比 | 相同原地语义下，FP16 延迟降低 2.9–13.2%，BF16 降低 1.9–13.2% |
 | Q/K Norm+RoPE 微基准 | 相对等价 `torch.compile` 链路快 4.9–8.1× |
 | nano-vLLM 端到端 | batch=1 Decode +1.77% / +2.31%，输出吞吐 +1.24% / +1.72% |
-| 工程验证 | 180 项 GPU 测试；memcheck 0 errors；racecheck 0 hazards |
+| 工程验证 | 最终提交全量 GPU suite：180 passed；代表性 memcheck/racecheck：0 errors / 0 hazards |
+
+最新形状图把算子微基准和引擎 A/B 分开呈现，并给出 PyTorch reference 的输出分配限制。不要把单算子比例当成端到端加速。
 
 所有性能结论只适用于文档记录的 GPU、dtype、Shape、软件版本和测试协议。
 
@@ -40,6 +43,12 @@ Residual Add + RMSNorm 提供与 vLLM/FlashInfer 风格一致的原地接口：
 residual = residual + input
 input = RMSNorm(residual) * weight
 ```
+
+## 本机 RTX 5060 调度实测
+
+在 RTX 5060 SM120 上，对 V3/V4 做了 5 个独立进程、每进程 10 轮交替顺序的配对测试。对测到的 1–256 行、FP16/BF16 形状，V4 总体更快；FP16 256 行 V3 仅快不到 1%，低于值得增加专用分支的幅度。因此 hidden size 1024 的 Auto 路径改为统一使用 V4，其他宽度仍回退 V2。结果和环境记录见 [本机调度结果](docs/RTX5060_LOCAL_TUNING.md)。
+
+该 dispatch 是本机实测选择，不是对所有 SM120 卡的普遍最优结论；迁移到不同功耗/散热配置后应重新测量。
 
 ## Qwen3 Decode 融合
 
@@ -68,6 +77,10 @@ input = RMSNorm(residual) * weight
   不包含 Block Barrier。
 - NCU 显示 V4 虽提高显存吞吐但增加寄存器使用，说明向量化、Occupancy
   和 Shape 之间需要实测权衡。
+- RTX 5060 上新补的 NCU profile 显示 V4 寄存器数更高、活跃 warp 比例更低，
+  但没有 local spill；four-warps Q/K 消融虽然达到 100% 理论 Occupancy，
+  仍未带来稳定端到端收益。完整指标、形状 dispatch 表和失败实验见
+  [RTX5060 shape map](docs/RTX5060_SHAPE_MAP_20261010.md)。
 
 ```bash
 bash scripts/check_sass.sh
@@ -78,6 +91,10 @@ bash scripts/profile_ncu.sh
 
 要求：WSL 可见 NVIDIA 驱动，安装与 PyTorch 版本匹配的 CUDA Toolkit、
 NVCC、Ninja 和 C++ 编译器。
+
+本机 2026-10-10 形状矩阵的环境是 PyTorch 2.14.1+cu130、CUDA Runtime
+13.0、NVCC 13.3、RTX 5060 SM120。仓库中 CUDA 12.8 命令是历史构建示例，
+不能当作该组最新数据的编译环境。
 
 ```bash
 python -m pip install -U pip ninja pytest
@@ -130,6 +147,7 @@ python -m benchmarks.profile_qk_norm_rope \
 - [`FIRST_RESULTS.md`](docs/FIRST_RESULTS.md)：PyTorch Native 基线与 NCU 结果。
 - [`INDUSTRIAL_BASELINE.md`](docs/INDUSTRIAL_BASELINE.md)：FlashInfer 公平对比。
 - [`QK_NORM_ROPE_KV_RESULTS.md`](docs/QK_NORM_ROPE_KV_RESULTS.md)：Qwen3 融合与端到端调度。
+- [`RTX5060_EXTENSION_VALIDATION.md`](docs/RTX5060_EXTENSION_VALIDATION.md)：当前 RTX 5060 环境的虚拟环境安装、真实负载 A/B 和 NCU 数据。
 
 ## 正确性契约
 
@@ -146,3 +164,10 @@ python -m benchmarks.profile_qk_norm_rope \
 本仓库证明的是一套完整的 CUDA 性能工程流程，而不是“自定义 Kernel 必然
 优于 PyTorch、FlashInfer 或 vLLM”。独立算子收益必须经过真实推理引擎 A/B
 验证；无法稳定获益的 Shape 应保留框架实现。
+
+
+## Final commit validation — 2026-10-10
+
+On the clean `d990cca2af201203ac810cb0c63c13049dabdd1c` commit, the full GPU suite completed with **180 passed** on RTX 5060 SM120. The extension was rebuilt from this checkout with CUDA Toolkit/NVCC 13.3 and `TORCH_CUDA_ARCH_LIST=12.0`, then installed into the test environment (PyTorch 2.14.1+cu130, CUDA Runtime 13.0).
+
+Focused sanitizer coverage exercised fused RMSNorm, Q/K Norm + RoPE, and Q/K Norm + RoPE + KV store: **3 tests passed under memcheck (0 errors)** and **3 tests passed under racecheck (0 hazards)**. These are representative sanitizer cases, not a full 180-test sanitizer matrix.

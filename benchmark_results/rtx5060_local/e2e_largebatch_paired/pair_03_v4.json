@@ -1,0 +1,90 @@
+{
+  "environment": {
+    "gpu": "NVIDIA GeForce RTX 5060",
+    "compute_capability": [
+      12,
+      0
+    ],
+    "torch": "2.14.1+cu130",
+    "cuda": "13.0"
+  },
+  "model": "/home/asus/models/Qwen3-0.6B",
+  "rmsnorm_backend": "sm120",
+  "qk_norm_rope_backend": "torch",
+  "results": [
+    {
+      "requests": 33,
+      "prefill_tokens": 528,
+      "decode_tokens": 495,
+      "output_tokens": 528,
+      "prefill_iterations": 1,
+      "decode_iterations": 15,
+      "prefill_seconds": 0.02425062912516296,
+      "decode_seconds": 0.08918250165879726,
+      "total_seconds": 0.1137523208744824,
+      "prefill_tokens_per_second": 21772.631022266396,
+      "decode_tokens_per_second": 5550.416177983178,
+      "output_tokens_per_second": 4641.66353654103,
+      "batch_ttft_seconds": 0.02425062912516296,
+      "mean_tpot_seconds": 0.005945500110586485,
+      "mixed_seconds": 0.0,
+      "mixed_iterations": 0,
+      "scheduler": {
+        "prefill_chunks": 33,
+        "mixed_batches": 0,
+        "prefill_only_batches": 1,
+        "decode_only_batches": 15,
+        "preemptions": 0
+      },
+      "prefix_cache": {
+        "queries": 33,
+        "block_hits": 99,
+        "token_hits": 1584,
+        "misses": 0,
+        "hash_collisions": 0,
+        "cached_evictions": 0
+      },
+      "input_len": 64,
+      "output_len": 16,
+      "peak_allocated_gib": 3.8096156120300293,
+      "peak_reserved_gib": 3.92578125
+    },
+    {
+      "requests": 64,
+      "prefill_tokens": 1024,
+      "decode_tokens": 960,
+      "output_tokens": 1024,
+      "prefill_iterations": 1,
+      "decode_iterations": 15,
+      "prefill_seconds": 0.03411552286706865,
+      "decode_seconds": 0.10149248503148556,
+      "total_seconds": 0.13601998705416918,
+      "prefill_tokens_per_second": 30015.661902355198,
+      "decode_tokens_per_second": 9458.828401947036,
+      "output_tokens_per_second": 7528.305377592765,
+      "batch_ttft_seconds": 0.03411552286706865,
+      "mean_tpot_seconds": 0.006766165668765704,
+      "mixed_seconds": 0.0,
+      "mixed_iterations": 0,
+      "scheduler": {
+        "prefill_chunks": 64,
+        "mixed_batches": 0,
+        "prefill_only_batches": 1,
+        "decode_only_batches": 15,
+        "preemptions": 0
+      },
+      "prefix_cache": {
+        "queries": 64,
+        "block_hits": 192,
+        "token_hits": 3072,
+        "misses": 0,
+        "hash_collisions": 0,
+        "cached_evictions": 0
+      },
+      "input_len": 64,
+      "output_len": 16,
+      "peak_allocated_gib": 3.8326950073242188,
+      "peak_reserved_gib": 3.955078125
+    }
+  ]
+}

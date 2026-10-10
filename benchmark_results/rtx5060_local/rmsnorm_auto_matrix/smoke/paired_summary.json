@@ -1,0 +1,194 @@
+{
+  "schema_version": 1,
+  "method": "alternating_independent_process_pairs",
+  "runs": 1,
+  "config": {
+    "model": "/home/asus/models/Qwen3-0.6B",
+    "requests": [
+      33,
+      64
+    ],
+    "input_len": 64,
+    "output_len": 16,
+    "max_model_len": 128,
+    "rmsnorm_backend": "sm120",
+    "qk_norm_rope_backend": "torch"
+  },
+  "environment": {
+    "gpu": "NVIDIA GeForce RTX 5060",
+    "compute_capability": [
+      12,
+      0
+    ],
+    "torch": "2.14.1+cu130",
+    "cuda": "13.0"
+  },
+  "workloads": [
+    {
+      "requests": 33,
+      "backends": {
+        "old_auto": {
+          "output_tokens_per_second": {
+            "median": 4629.94596476514,
+            "runs": [
+              4629.94596476514
+            ]
+          },
+          "decode_tokens_per_second": {
+            "median": 5542.425300200077,
+            "runs": [
+              5542.425300200077
+            ]
+          },
+          "mean_tpot_seconds": {
+            "median": 0.005954072127739588,
+            "runs": [
+              0.005954072127739588
+            ]
+          },
+          "batch_ttft_seconds": {
+            "median": 0.02437459398061037,
+            "runs": [
+              0.02437459398061037
+            ]
+          }
+        },
+        "new_auto": {
+          "output_tokens_per_second": {
+            "median": 4510.975144283189,
+            "runs": [
+              4510.975144283189
+            ]
+          },
+          "decode_tokens_per_second": {
+            "median": 5485.914307705552,
+            "runs": [
+              5485.914307705552
+            ]
+          },
+          "mean_tpot_seconds": {
+            "median": 0.006015405664220453,
+            "runs": [
+              0.006015405664220453
+            ]
+          },
+          "batch_ttft_seconds": {
+            "median": 0.026431343983858824,
+            "runs": [
+              0.026431343983858824
+            ]
+          }
+        }
+      },
+      "paired_change_pct": {
+        "output_tokens_per_second": {
+          "median": -2.5695941461810534,
+          "per_pair": [
+            -2.5695941461810534
+          ]
+        },
+        "decode_tokens_per_second": {
+          "median": -1.0196076524925712,
+          "per_pair": [
+            -1.0196076524925712
+          ]
+        },
+        "mean_tpot_seconds": {
+          "median": 1.0301107404311782,
+          "per_pair": [
+            1.0301107404311782
+          ]
+        },
+        "batch_ttft_seconds": {
+          "median": 8.438089286264905,
+          "per_pair": [
+            8.438089286264905
+          ]
+        }
+      }
+    },
+    {
+      "requests": 64,
+      "backends": {
+        "old_auto": {
+          "output_tokens_per_second": {
+            "median": 7464.96997383201,
+            "runs": [
+              7464.96997383201
+            ]
+          },
+          "decode_tokens_per_second": {
+            "median": 9365.61863931303,
+            "runs": [
+              9365.61863931303
+            ]
+          },
+          "mean_tpot_seconds": {
+            "median": 0.00683350480782489,
+            "runs": [
+              0.00683350480782489
+            ]
+          },
+          "batch_ttft_seconds": {
+            "median": 0.03426182107068598,
+            "runs": [
+              0.03426182107068598
+            ]
+          }
+        },
+        "new_auto": {
+          "output_tokens_per_second": {
+            "median": 7383.492880909102,
+            "runs": [
+              7383.492880909102
+            ]
+          },
+          "decode_tokens_per_second": {
+            "median": 9284.933719870132,
+            "runs": [
+              9284.933719870132
+            ]
+          },
+          "mean_tpot_seconds": {
+            "median": 0.006892887114857634,
+            "runs": [
+              0.006892887114857634
+            ]
+          },
+          "batch_ttft_seconds": {
+            "median": 0.034843494184315205,
+            "runs": [
+              0.034843494184315205
+            ]
+          }
+        }
+      },
+      "paired_change_pct": {
+        "output_tokens_per_second": {
+          "median": -1.091459084343549,
+          "per_pair": [
+            -1.091459084343549
+          ]
+        },
+        "decode_tokens_per_second": {
+          "median": -0.8615012264562627,
+          "per_pair": [
+            -0.8615012264562627
+          ]
+        },
+        "mean_tpot_seconds": {
+          "median": 0.8689875649863676,
+          "per_pair": [
+            0.8689875649863676
+          ]
+        },
+        "batch_ttft_seconds": {
+          "median": 1.6977297045278616,
+          "per_pair": [
+            1.6977297045278616
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "profiler": "Nsight Compute 2026.2.1",
+  "collection": "full set, 41 replay passes",
+  "shapes": {
+    "rmsnorm": "tokens=64, hidden=1024, fp16",
+    "qk_norm_rope_kv": "tokens=64, bf16"
+  },
+  "kernels": {
+    "rmsnorm_v3_h1024_t64": {
+      "gpu__time_duration.sum": {
+        "value": "2.944000",
+        "unit": "us"
+      },
+      "launch__registers_per_thread": {
+        "value": "19",
+        "unit": "register/thread"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": "33.237020",
+        "unit": "%"
+      },
+      "dram__bytes.sum.per_second": {
+        "value": "91.478261",
+        "unit": "Gbyte/s"
+      },
+      "derived__local_spilling_requests": {
+        "value": "0",
+        "unit": ""
+      }
+    },
+    "rmsnorm_v4_h1024_t64": {
+      "gpu__time_duration.sum": {
+        "value": "3.040000",
+        "unit": "us"
+      },
+      "launch__registers_per_thread": {
+        "value": "28",
+        "unit": "register/thread"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": "15.475675",
+        "unit": "%"
+      },
+      "dram__bytes.sum.per_second": {
+        "value": "88.673684",
+        "unit": "Gbyte/s"
+      },
+      "derived__local_spilling_requests": {
+        "value": "0",
+        "unit": ""
+      }
+    },
+    "qk_rope_kv_t64": {
+      "gpu__time_duration.sum": {
+        "value": "5.088000",
+        "unit": "us"
+      },
+      "launch__registers_per_thread": {
+        "value": "29",
+        "unit": "register/thread"
+      },
+      "sm__warps_active.avg.pct_of_peak_sustained_active": {
+        "value": "37.657657",
+        "unit": "%"
+      },
+      "dram__bytes.sum.per_second": {
+        "value": "110.691824",
+        "unit": "Gbyte/s"
+      },
+      "derived__local_spilling_requests": {
+        "value": "0",
+        "unit": ""
+      }
+    }
+  }
+}
