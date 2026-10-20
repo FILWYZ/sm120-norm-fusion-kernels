@@ -26,6 +26,10 @@ RMSNorm + RoPE + Paged KV Store 融合。
 
 所有性能结论只适用于文档记录的 GPU、dtype、Shape、软件版本和测试协议。
 
+## 验证版本
+
+最终 RTX 5060 构建与测试记录使用 PyTorch `2.14.1+cu130`、CUDA Runtime 13.0、CUDA Toolkit/NVCC 13.3、FlashInfer 0.6.6、Triton 3.8.0；完整 GPU 测试为 **180 passed**。早期 `FIRST_RESULTS.md` 中的 Native/NCU 初测属于 PyTorch 2.11+cu128 阶段，和最终验证分开阅读。当前形状覆盖表见 [RTX 5060 RMSNorm shape map](docs/RTX5060_SHAPE_MAP_20261010.md)，带条件的 E2E dispatch 与 NCU 分析见 [extension validation](docs/RTX5060_EXTENSION_VALIDATION.md)。
+
 ## 已实现版本
 
 | 版本 | 实现 | 优化目标 |
@@ -99,7 +103,7 @@ NVCC、Ninja 和 C++ 编译器。
 ```bash
 python -m pip install -U pip ninja pytest
 
-CUDA_HOME=/usr/local/cuda-12.8 \
+CUDA_HOME=/usr/local/cuda-13.3 \
 TORCH_CUDA_ARCH_LIST=12.0 \
 python -m pip install -e . --no-build-isolation
 
